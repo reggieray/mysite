@@ -1,0 +1,30 @@
+<div class="inner">
+    <h2 class="major">Get in touch</h2>
+    <p>Say hello using the form below or send me an email via the email address below.</p>
+    <form name="contact" method="post" action="/contact/success" data-netlify-recaptcha="true" data-netlify="true">
+        <input type="hidden" name="form-name" value="contact" />
+        <div class="fields">
+            <div class="field">
+                <label for="name">Name</label>
+                <input type="text" name="name" />
+            </div>
+            <div class="field">
+                <label for="email">Email</label>
+                <input type="email" name="email" />
+            </div>
+            <div class="field">
+                <label for="message">Message</label>
+                <textarea name="message" rows="4"></textarea>
+            </div>
+            <div class="field">
+                <div data-netlify-recaptcha="true"></div>
+            </div>
+        </div>
+        <ul class="actions">
+            <li><button type="submit">Send Message</button></li>
+        </ul>
+    </form>
+    <ul class="contact">
+        <li class="fa-envelope"><a href="mailto:hello@matthewregis.dev">hello@matthewregis.dev</a></li>
+    </ul>
+</div>

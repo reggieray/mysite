@@ -1,0 +1,17 @@
+@{
+    Layout = "_Layout.cshtml";
+}
+
+@section PostHead {
+    @Html.Partial("_PostHead.cshtml")
+}
+
+@section Header {
+    @Html.Partial("_PostHeader.cshtml")
+}
+
+@RenderBody()
+
+@Html.Partial("_PostFooter.cshtml")
+
+@Html.Partial("_PostScripts.cshtml")
