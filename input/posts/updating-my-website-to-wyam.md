@@ -48,4 +48,4 @@ Then to view your site locally run:
 wyam preview
 ```
 
-If you are interested in looking at the source code then you can find it [Here](). If the link doesn't work copy and paste the following link in the URL bar.
+If you are interested in looking at the source code then you can find it [Here](https://github.com/reggieray/mysite.git). If the link doesn't work copy and paste the following link in the URL bar https://github.com/reggieray/mysite.git.
