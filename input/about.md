@@ -2,9 +2,9 @@ Title: About
 ---
 # Breif intro
 
-Hi, my name is Matthew Regis. I am a software developer working in the West Midlands area. I am a full stack .NET and Android developer. I primarily use C# with .NET and Kotlin for Android.
+Hi, my name is Matthew Regis. I am a software developer working in the West Midlands area. I am a full stack .NET and Android developer. I primarily use C# with .NET and Kotlin for Android. I like to learn every day to stay up to date on the latest Android/.NET technologies along with best practices. 
 
-I learn every day to stay up to date on the latest Android/.NET technologies along with best practices. 
+You can find some of my personal Android projects [Here](https://play.google.com/store/apps/developer?id=Regis). You can also checkout my Github [Here](https://github.com/reggieray).
 
 # More info
 
