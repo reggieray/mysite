@@ -1,5 +1,5 @@
 trigger:
-- release
+- staging
 
 pool:
   vmImage: 'Ubuntu-16.04'
