@@ -1,6 +1,6 @@
 Settings[Keys.Host] = "matthewregis.dev";
 Settings[Keys.DateTimeDisplayCulture] = "en-GB";
-Settings[BlogKeys.Title] = "Matthew Regis (Staging)";
+Settings[BlogKeys.Title] = "Matthew Regis";
 Settings[BlogKeys.Description] = "Hi, I'm Matthew Regis.";
 Settings[BlogKeys.Intro] = "Musings from a full stack .NET & Android developer. ";
 Settings[BlogKeys.Image] = "images/bg.jpg";
