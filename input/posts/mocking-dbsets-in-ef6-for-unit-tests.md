@@ -23,8 +23,8 @@ public void Should_Get_Student_When_Get_With_Valid_Id()
     var firstStudent = fakeStudentsList.FirstOrDefault();
     var mockStudentsList = fakeStudentsList.ToMockDbSet();
 
-    StudentContext.Setup(c => c.Students).Returns(mockStudentsList.Object);
-    var service = new StudentsService(ContextFactory.Object, Logger.Object);
+    MockStudentContext.Setup(c => c.Students).Returns(mockStudentsList.Object);
+    var service = new StudentsService(MockContextFactory.Object, MockLogger.Object);
 
     //Act
     var student = service.Get(firstStudent.StudentId);
