@@ -10,21 +10,37 @@ You can find some of my personal Android projects [Here](https://play.google.com
 
 Instead of laboriously reading through a wall of text, I've broken it down like a Q&A.
 
+<div style="width:100%;height:0;padding-bottom:56%;position:relative;"><iframe src="https://giphy.com/embed/6hfnu4fJgFyrm" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div>
+
+<hr />
+
 **First memory of coding**
 
 > VBA in Microsoft Office - I was in high school at the time. I can't remember which one came first Excel or Access, but I remember editing a macro in VB. I didn't realize it at the time, but that was my frist experience at coding.
+
+<hr />
 
 **First cool tech you owned**
 
 > T-Mobile G1 - I have since owned many other Android phones but this is what sparked my passion for wanting to create mobile apps, especially Android apps. 
 
+<div style="width:100%;height:0;padding-bottom:56%;position:relative;"><iframe src="https://giphy.com/embed/1jDgjPIpH0mn6" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div>
+
+<hr />
+
 **What got you into I.T.**
 
 > Probably playing PC games as a kid. I couldn't really afford a games console when I was much younger so instead I would buy PC games that I could play on my dad's PC. I would sometimes start exploring the game files to see what I could modify.
 
+<hr />
+
 **Favorite game of all time**
 
 > Half-Life - This was my first-ever FPS game I ever owned and still to this day it's the best game I have ever experienced. The graphics don't compare to todays standards, but the immersive gaming experience was like no other. I also really enjoyed playing Black Mesa which is a fan-made Half-Life remake.
+
+<div style="width:100%;height:0;padding-bottom:57%;position:relative;"><iframe src="https://giphy.com/embed/lFhYMyvM52siQ" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div>
+
+<hr />
 
 **Something thats not tech related**
 
