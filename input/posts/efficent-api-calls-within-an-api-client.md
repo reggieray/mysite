@@ -1,8 +1,8 @@
-Title: Efficent api calls (client)
+Title: Efficent api calls within an api client
 Published: 8/6/2019
 Tags: 
-- .NET 
-- C#
+- dotnet
+- csharp
 ---
 # Introduction
 

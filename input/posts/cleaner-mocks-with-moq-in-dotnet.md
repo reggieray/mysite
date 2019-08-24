@@ -1,9 +1,9 @@
 Title: Cleaner mocks with Moq in .NET
 Published: 5/25/2019
 Tags: 
-- .NET
+- dotnet
 - Moq
-- C#
+- csharp
 ---
 # Intro
 

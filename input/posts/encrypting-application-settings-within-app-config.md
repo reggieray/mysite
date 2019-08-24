@@ -1,7 +1,7 @@
 Title: Encrypting application settings within app.config
 Published: 4/26/2019
 Tags: 
-- .Net
+- dotnet
 - ASP.Net
 - XML
 - Powershell
