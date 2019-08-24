@@ -1,7 +1,7 @@
 Title: Updating my website to wyam
 Published: 4/15/2019
 Tags: 
-- .Net
+- dotnet
 - Wyam
 ---
 # Introduction

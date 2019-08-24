@@ -1,10 +1,10 @@
 Title: Mocking DbSet in EF6 for unit tests
 Published: 5/12/2019
 Tags: 
-- .NET
+- dotnet
 - Moq
 - Entity Framework
-- C#
+- csharp
 ---
 # Intro
 
