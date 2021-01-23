@@ -1,5 +1,5 @@
 Title: Refit examples - A type-safe HTTP client for .NET
-Published: 15/1/2020
+Published: 1/15/2021
 Tags: 
 - dotnet
 - csharp
