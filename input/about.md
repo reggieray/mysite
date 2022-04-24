@@ -6,8 +6,6 @@ Hi, my name is Matthew Regis. I am a software engineer working in the West Midla
 
 You can find some of my personal Android projects [Here](https://play.google.com/store/apps/developer?id=Regis). You can also checkout my Github [Here](https://github.com/reggieray).
 
-<div style='position:relative; padding-bottom:calc(66.88% + 44px)'><iframe src='https://gfycat.com/ifr/InsignificantSneakyHogget' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div><p> <a href="https://gfycat.com/insignificantsneakyhogget">via Gfycat</a></p>
-
 # More info
 
 <hr />

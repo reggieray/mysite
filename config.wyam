@@ -4,6 +4,6 @@ Settings[BlogKeys.Title] = "Matthew Regis";
 Settings[BlogKeys.Description] = "Hi, I'm Matthew Regis.";
 Settings[BlogKeys.Intro] = "Musings from a .NET software engineer.";
 Settings[BlogKeys.Image] = "images/bg.jpg";
-Settings[BlogKeys.IndexPageSize] = 4;
+Settings[BlogKeys.IndexPageSize] = 8;
 #r Blog
 #t SolidState
