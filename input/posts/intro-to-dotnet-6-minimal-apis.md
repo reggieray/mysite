@@ -65,9 +65,45 @@ There are some [missing features](https://docs.microsoft.com/en-us/aspnet/core/t
 So how did the `Program.cs` file come to have so few lines of code. Some features that have enabled this are: 
 
 - [Top-level statements](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/program-structure/top-level-statements): Introduced with C# 9 you don't have to explicitly include a `Main` method. The `Main` method is implied, it is implicitly there.
+
+```csharp
+// Before C# 9
+class TestClass
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Hello World!");
+    }
+}
+```
+```csharp
+// Introduced in C# 9
+Console.WriteLine("Hello World!");
+```
 - [Global and implicit usings](https://devblogs.microsoft.com/dotnet/welcome-to-csharp-10/#global-and-implicit-usings): Introduced in C# 10, implicit usings feature automatically adds common global using directives.
+```csharp
+// format: global using <fully-qualified-namespace>;
+// applies to the entire project
+
+global using System;
+
+global using static System.Console;
+global using Env = System.Environment;
+```
 - [Improvements for lambda expressions](https://devblogs.microsoft.com/dotnet/welcome-to-csharp-10/#improvements-for-lambda-expressions-and-method-groups): Another feature introduced in C# 10 implicit lambda expressions.
+```csharp
+// Before C# 10
+Func<string, int> parse = (string s) => int.Parse(s);
+```
+```csharp
+// Introduced in C# 10
+var parse = (string s) => int.Parse(s);
+```
 - [Attributes on lambdas](https://devblogs.microsoft.com/dotnet/welcome-to-csharp-10/#attributes-on-lambdas): In the same way you could put attributes to methods or local functions you can you put them on lambdas, Also introduced in C# 10.
+```csharp
+Func<string, int> parse = [Example(1)] (s) => int.Parse(s);
+var choose = [Example(2)][Example(3)] object (bool b) => b ? 1 : "two";
+```
 
 # Misconceptions
 
