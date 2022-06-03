@@ -9,7 +9,11 @@ Tags:
 ---
 # Overview
 
-Minimal APIs was introduced with the [release of .NET6](https://devblogs.microsoft.com/dotnet/announcing-net-6/) as a alternative approach for building API's compared to the MVC/Controller approach that .NET developers are probably used too. Minimal APIs allow you to create HTTP APIs with minimal dependencies and minimal number of files.
+Minimal APIs was introduced with the [release of .NET6](https://devblogs.microsoft.com/dotnet/announcing-net-6/) as a alternative approach for building API's compared to the MVC/Controller approach that .NET developers are probably used too. 
+
+To quote the Microsoft docs from [Tutorial: Create a minimal web API with ASP.NET Core](https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio)
+
+> Minimal APIs are architected to create HTTP APIs with minimal dependencies. They are ideal for microservices and apps that want to include only the minimum files, features, and dependencies in ASP.NET Core.
 
 A minimal api hello world would look like the following:
 
