@@ -120,6 +120,9 @@ Following the release of Minimal API's there have been a few misconceptions, nam
 # Further reading
 
 - [Creating a minimal web API](https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio) - Tutorial documentation from Microsoft for creating a minimal API. Also contains a instructions for creating a Todo app.
- - [Minimal APIs overview](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis?view=aspnetcore-6.0) - Microsoft documentation
+- [Minimal APIs overview](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/minimal-apis?view=aspnetcore-6.0) - Microsoft documentation
 - [Integration testing minimal apis](https://github.com/martincostello/dotnet-minimal-api-integration-testing) - Github repo exploring integration testing
+- [Minimal API Playground](https://github.com/DamianEdwards/MinimalApiPlayground)
+- [.NET Docs Show on Minimal APIs](https://github.com/Elfocrash/DotnetDocsShow.MinimalApis) - [Youtube Link](https://www.youtube.com/watch?v=HDinmuGYaIA)
 
+> **_UPDATE: 27th June 2022 -_** I have since created an [example github repo](https://github.com/reggieray/example-minimal-apis) with example minimal api projects that highlight the differences of the minimal apis vs MVC, various ways of structuring and testing a minimal api.   
