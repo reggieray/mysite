@@ -126,6 +126,7 @@ AppExceptions
 - `todecimal(Expr)` - [todecimal() function](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/todecimalfunction)
 - `round(source [, Precision])` - [round() function](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/roundfunction)
 - `bin(value,roundTo)` - [bin() function](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/binfunction)
+- `T | project ColumnName [= Expression] [, ...]` - [project operator](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/projectoperator)
 - `T | render Visualization [with ( PropertyName = PropertyValue [, ...] )]` - [render operator](https://docs.microsoft.com/en-us/azure/data-explorer/kusto/query/renderoperator?pivots=azuremonitor)
 
 Useful links:
