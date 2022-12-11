@@ -1,3 +1,7 @@
+// Normalize the culture for the examples so they produce the same output regardless of system culture
+System.Globalization.CultureInfo.DefaultThreadCurrentCulture
+    = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+
 Settings[Keys.Host] = "matthewregis.dev";
 Settings[Keys.DateTimeDisplayCulture] = "en-GB";
 Settings[BlogKeys.Title] = "Matthew Regis";
