@@ -37,7 +37,17 @@ dotnet new webapi -n MyApi
 
 This command creates a new .NET API project named MyApi. You can open this project in your favorite code editor and modify it to suit your needs.
 
-### Step 2: Containerize the .NET API
+### Step 2: Start Minikube
+
+The next step is to start Minikube. To do this, open a command prompt or terminal window and run the following command:
+
+```
+minikube start
+```
+
+This command starts a single-node Kubernetes cluster using the default configuration.
+
+### Step 3: Containerize the .NET API
 
 Once you have created your .NET API, the next step is to containerize it using Docker. To do this, create a Dockerfile in the root directory of your .NET API project with the following contents:
 
@@ -69,16 +79,6 @@ To make the image available for minikube run the following command and then run 
 ```
 minikube -p minikube docker-env --shell powershell | Invoke-Expression
 ```
-
-### Step 3: Start Minikube
-
-The next step is to start Minikube. To do this, open a command prompt or terminal window and run the following command:
-
-```
-minikube start
-```
-
-This command starts a single-node Kubernetes cluster using the default configuration.
 
 ### Step 4: Deploy the .NET API to Minikube
 
