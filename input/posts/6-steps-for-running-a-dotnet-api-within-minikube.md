@@ -106,7 +106,7 @@ spec:
         - containerPort: 80
 ```
 
-This manifest specifies a deployment named myapi that runs one replica of the myapi container, which was built in step 2. The container listens on port 80.
+This manifest specifies a deployment named myapi that runs one replica of the myapi container, which was built in step 3. The container listens on port 80.
 
 To deploy the API to Minikube, run the following command:
 
