@@ -34,7 +34,7 @@
 // Base.
 
 	@import 'base/page';
-	@import 'base/typography';
+	@import 'base/typography_override';
 
 // Component.
 
@@ -50,7 +50,7 @@
 
 // Layout.
 
-	@import 'layout/header';
+	@import 'layout/header_override';
 	@import 'layout/menu';
 	@import 'layout/banner';
 	@import 'layout/wrapper';

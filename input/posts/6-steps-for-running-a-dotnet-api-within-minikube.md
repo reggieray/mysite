@@ -6,6 +6,7 @@ Tags:
 - csharp
 - minikube
 - kubectl
+- kubernetes
 
 ---
 
