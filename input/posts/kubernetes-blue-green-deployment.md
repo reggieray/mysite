@@ -1,4 +1,4 @@
-Title: Blue Green deployment
+Title: Kubernetes Blue Green deployment
 Published: 4/4/2023
 Tags: 
 - docker desktop
