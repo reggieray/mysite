@@ -5,8 +5,8 @@ System.Globalization.CultureInfo.DefaultThreadCurrentCulture
 Settings[Keys.Host] = "matthewregis.dev";
 Settings[Keys.DateTimeDisplayCulture] = "en-GB";
 Settings[BlogKeys.Title] = "Matthew Regis";
-Settings[BlogKeys.Description] = "Hi, I'm Matthew Regis.";
-Settings[BlogKeys.Intro] = "Musings from a .NET software engineer.";
+Settings[BlogKeys.Description] = "Hi 👋🏽, I'm Matthew Regis.";
+Settings[BlogKeys.Intro] = "Musings 🤔 from a dotnet software engineer 👨🏽‍💻.";
 Settings[BlogKeys.Image] = "images/bg.jpg";
 Settings[BlogKeys.IndexPageSize] = 8;
 #r Blog
