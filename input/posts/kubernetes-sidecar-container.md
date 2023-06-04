@@ -27,7 +27,7 @@ Sidecar containers can serve various purposes, such as:
 
 - Service Discovery and Configuration: A sidecar container can assist with service discovery by registering the main container with a service registry or managing dynamic configuration updates for the main container. It helps automate the setup and configuration of the application.
 
-# Example implementation
+# Example
 
 ## Prerequisites:
 
