@@ -8,7 +8,7 @@ Tags:
 
 ---
 
-# What are health checks in dotnet? 
+# What are health checks in dotnet?
 
 Health checks in .NET are a way to monitor the health of your application and its dependencies. They help you periodically check the state of critical components, such as databases or external services, to ensure they are working properly.
 
