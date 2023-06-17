@@ -1,9 +1,8 @@
 Title: 5 steps for publishing an image to docker hub
 Published: 6/9/2023
 Tags: 
-- dotnet
 - docker
-- csharp
+- docker hub
 
 ---
 
