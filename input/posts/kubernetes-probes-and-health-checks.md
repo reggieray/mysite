@@ -245,4 +245,4 @@ service "healthz" deleted
 
 - [Configure Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
 - [Probe v1 core](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#probe-v1-core)
-- [Dotnet health checks blog post](https://matthewregis.dev/posts/kubernetes-probes-and-health-checks)
+- [Dotnet health checks blog post](https://matthewregis.dev/posts/dotnet-health-checks)
