@@ -220,3 +220,4 @@ private static Task WriteResponse(HttpContext context, HealthReport healthReport
 
 - [Health checks in ASP.NET Core](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks)
 - [Dotnet health checks example](https://github.com/reggieray/dotnet-health-checks)
+- [Kubernetes probes and health checks blog post](https://matthewregis.dev/posts/kubernetes-probes-and-health-checks)
