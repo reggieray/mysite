@@ -143,7 +143,7 @@ deployment.apps/my-app-deployment created
 service/my-app-service created
 ```
 
-4. Verify consumed secret
+4. Verify consumed config map
 
 ```ps
 > minikube service my-app-service
