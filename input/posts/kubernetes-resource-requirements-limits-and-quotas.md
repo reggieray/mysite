@@ -53,13 +53,41 @@ minikube start
 
 ## Implementation:
 
-1. Create a pod definition `resource-example.yaml` that we can edit later.
+In this example I'll be creating a namespace with a resource quota and then creating a pod in that namespace.
+
+1. Create namespace and apply resource quota
+
+```ps
+> k create ns my-ns
+```
+Then apply this example resource quota `quota-mem-cpu.yaml` from the kubernetes.io website. You should also find it at https://k8s.io/examples/admin/resource/quota-mem-cpu.yaml
+
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: mem-cpu-demo
+spec:
+  hard:
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    limits.cpu: "2"
+    limits.memory: 2Gi
+```
+Apply the resource quota.
+
+```ps
+> k apply -f https://k8s.io/examples/admin/resource/quota-mem-cpu.yaml -n=my-ns
+resourcequota/mem-cpu-demo created
+```
+
+2. Create a pod definition `resource-example.yaml` that we can edit later.
 
 ```ps
 > k run resource-example --image=nginx --dry-run=client -oyaml > resource-example.yaml
 ```
 
-2. Update the pod definition
+3. Update the pod definition
 
 From something like this 
 
@@ -107,23 +135,23 @@ spec:
 status: {}
 ```
 
-3. Create the pod
+4. Apply the pod definition
 
 ```bash
-> k apply -f .\resource-example.yaml
+> k apply -f .\resource-example.yaml -n=my-ns
 pod/resource-example created
 ```
 
-4. Verify the pod
+5. Verify the pod
 
 If you have enough resources the pod should start without any issues. Also use `describe` to output the pod was created in the desired state.
 
 ```bash
-> k get po resource-example
+> k get po resource-example -n=my-ns
 NAME               READY   STATUS    RESTARTS   AGE
 resource-example   1/1     Running   0          18s
 
-k describe po resource-example
+> k describe po resource-example -n=my-ns
 Name:             resource-example
 Namespace:        default
 Priority:         0
@@ -157,11 +185,22 @@ Containers:
 ### output shortened for brevity ### 
 ```
 
-5. Clean up
+Also verify the resource quota is being used, now the pod in running we should see that resources are being used.
 
 ```bash
-> k delete po resource-example
+> k get resourcequota mem-cpu-demo --namespace=my-ns
+NAME           AGE     REQUEST                                            LIMIT
+mem-cpu-demo   2m28s   requests.cpu: 100m/1, requests.memory: 256Mi/1Gi   limits.cpu: 200m/2, limits.memory: 512Mi/2Gi
+```
+
+6. Clean up
+
+```bash
+> k delete po resource-example -n=my-ns
 pod "resource-example" deleted
+
+> k delete ns my-ns
+namespace "my-ns" deleted
 ```
 
 # Further reading
