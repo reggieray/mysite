@@ -14,4 +14,8 @@ I give part of my time to volunteering for a charity organisation called A4U, wh
 
 Below are recent certificates or courses I have completed:  
 
-<div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="31a367e0-7401-4ecb-bbf7-33c9f3332186" data-share-badge-host="https://www.credly.com"></div><script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+| Badge | Description |
+| ----- | ----------- |
+| <a href="https://www.credly.com/badges/31a367e0-7401-4ecb-bbf7-33c9f3332186/public_url"><img src="https://images.credly.com/size/680x680/images/f88d800c-5261-45c6-9515-0458e31c3e16/ckad_from_cncfsite.png" alt="CKAD: Certified Kubernetes Application Developer" style="width:100x;height:100px;"></a> | <a href="https://www.credly.com/badges/31a367e0-7401-4ecb-bbf7-33c9f3332186/public_url">CKAD: Certified Kubernetes Application Developer </a> |
+| <a href="https://learn.microsoft.com/api/credentials/share/en-gb/MattRegis-3148/7EF317694C46A869?sharingId=7D6BCAC3496D752F"><img src="https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-fundamentals-badge.svg?branch=main" alt="AZ-900 Azure Fundamentals" style="width:100px;height:100px;"></a> | <a href="https://learn.microsoft.com/api/credentials/share/en-gb/MattRegis-3148/7EF317694C46A869?sharingId=7D6BCAC3496D752F">Microsoft Certified: Azure Fundamentals </a> |
+
