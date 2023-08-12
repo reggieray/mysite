@@ -1,4 +1,4 @@
-Title: How I passed the Certified Kubernetes Application Developer) exam
+Title: How I passed the Certified Kubernetes Application Developer (CKAD) exam
 Published: 7/29/2023
 Tags: 
 - kubernetes
@@ -7,7 +7,7 @@ Tags:
 
 # Introduction
 
-In this blog post I'll share how I prepared and recently passed the [Certified Kubernetes Application Developer (CKAD)](https://training.linuxfoundation.org/certification/certified-kubernetes-application-developer-ckad/#) and how I found the whole experience. Hopefully there will be little nuggets of wisdom that you might find useful if you are preparing for the CKAD exam yourself.
+In this blog post I'll share how I prepared and recently passed the [Certified Kubernetes Application Developer (CKAD)](https://training.linuxfoundation.org/certification/certified-kubernetes-application-developer-ckad/#) and how I found the whole experience. Hopefully there will be little nuggets of wisdom that you might find useful if you're preparing for the CKAD exam yourself.
 
 I'll go in chronological order of how I prepared, which might not be the best or right way to go about it, but maybe there are some learnings that can be taken away from how I approached it.
 
@@ -17,15 +17,15 @@ I started at the end of March 2023 and took the exam in the middle of July 2023.
 
 # CKAD Course 
 
-The first thing I did before anything was buy this course [Kubernetes Certified Application Developer (CKAD) with Tests](https://www.udemy.com/share/1013BQ3@bPrI8t5qKeq7saONoCA52mKUwAjgC5fTr2VFXJsCtpi0SJKrq8Xx6mpHhwnkDazI/) from [udemy.com](https://udemy.com). I bought it when there was a discount on and in the end it cost me £16.99. It's listed at £59.99, but at the moment it's got a 73% discount offer making it £15.99. It seem that through out the year there is always a discount for this course.
+The first thing I did before anything was buy this course [Kubernetes Certified Application Developer (CKAD) with Tests](https://www.udemy.com/share/1013BQ3@bPrI8t5qKeq7saONoCA52mKUwAjgC5fTr2VFXJsCtpi0SJKrq8Xx6mpHhwnkDazI/) from [udemy.com](https://udemy.com). I bought it when there was a discount and in the end it cost me £16.99. It's listed at £59.99, but at the moment it's got a 73% discount offer making it £15.99. It seems that through out the year there is always a discount for this course.
 
 The course structure consists of videos based off an older curriculum, but has been updated to keep up to date with todays curriculum and all of the videos structured in the old way are relevant today.
 
-This course also gives you access to a online simulator environment via https://kodekloud.com/. In the course it gives you instructions on how to redeem this access. After each section in the course there were some labs where you were given some tasks against the simulator and near the end there were two mock tests.
+This course also gives you access to a online web simulator environment via https://kodekloud.com/. In the course it gives you instructions on how to redeem this access. After each section in the course there were some labs where you were given some tasks against the simulator and near the end there were two mock tests.
 
 > <img src="/posts/images/kodekloud-simulator.jpg" style="max-width: 100%">
 
-I made heavy use of the simulator mock exams, even though I knew the answers after a few attempts it's good to practice becoming faster. I feel this significantly helped me in the real exam, because I did find I had some time at the end to review and adjust my answers. As you can see from the image above the simulator consists of two parts, the questions on the left and a console on the right. This is not to dissimilar to the real exam except in the real exam you are remoted into a linux box (Ubuntu 20.04 in my case) where you would end up launching a terminal and have access to a web browser.
+I made heavy use of the simulator mock exams, even though I knew the answers after a few attempts it's good to practice becoming faster. I feel this significantly helped me in the real exam, because I did find I had some time at the end to review and adjust my answers. As you can see from the image above the simulator consists of two parts, the questions on the left and a console on the right. This is not to dissimilar to the real exam except in the real exam you are remoted into a linux box (Ubuntu 20.04 in my case) where you would end up launching a terminal and have access to a web browser to look up kubernetes documentation.
 
 # Local Setup
 
@@ -79,7 +79,7 @@ The latest curriculum can be found [here](https://github.com/cncf/curriculum). I
 
 # Buy Exam
 
-Although this seems like the most obvious step, I waited until there was a discount on and throughout the year there are multiple promotions or discounts going to be available. In the end I was able to purchase with a 50% discount. Keep an eye out on their [twitter feed](https://twitter.com/lf_training). Here's an example of a promotion during [cyber monday 2022](https://training.linuxfoundation.org/cyber-2022/#)
+Although this seems like the most obvious step, I waited until there was a discount and throughout the year there are multiple promotions or discounts going to be available. In the end I was able to purchase with a 50% discount. Keep an eye out on their [twitter feed](https://twitter.com/lf_training). Here's an example of a promotion during [cyber monday 2022](https://training.linuxfoundation.org/cyber-2022/#)
 
 > <img src="/posts/images/linux-foundation-cyber-2022.jpg" style="max-width: 100%">
 
@@ -91,7 +91,7 @@ I made sure to use these exam simulators soon before the exam started so I could
 
 # The Exam
 
-You can access the exam from the [My Portal](https://trainingportal.linuxfoundation.org/learn/dashboard/) of linuxfoundation.org. You should have a button to start the exam, the button will visible but disabled before the time you have booked your exam.
+You can access the exam from the [My Portal](https://trainingportal.linuxfoundation.org/learn/dashboard/) of linuxfoundation.org. You should have a button to start the exam, the button will visible before the exam but disabled before the time you have booked your exam.
 
 ## Check in
 
@@ -103,14 +103,14 @@ I took the exam at my sisters home office and made sure to remove any pictures o
 
 This went pretty smoothly, although I did get contacted from the proctor through out the test.
 
-- The first incident was when I put my face up to the screen, as I was concentrating I unconsciously leaning forward towards my laptop at which point the proctor messaged me to move back so they could clearly see me.
-- The second incident was when my sisters cat started getting lonely or curious (I'm still not sure) why she couldn't see me and started pawing and meowing loudly at the door at which point the proctor messaged me to ask what that noise was in the background.
+- The first incident was when I put my face up to the screen, as I was concentrating I was unconsciously leaning forward towards my laptop at which point the proctor messaged me to move back so they could clearly see me.
+- The second incident was when my sisters cat started getting lonely or curious (I'm still not sure) why she couldn't see me and started pawing and meowing loudly at the door at which point the proctor messaged me to confirm what the noise anomaly was.
 
 I also found myself reframing from muttering or speaking to myself and covering my mouth as I knew this is something the proctor would pick up on.
 
 ## Results
 
-The exam results are given 24hr after the exam is taken. You should receive a email indicating if you have passed or not. You can also check the portal. I'll admit I refreshed the portal a couple times to see if I could see my results yet. 
+The exam results are given 24hr after the exam is taken. You should receive a email indicating if you have passed or not. You can also check the portal. I'll admit I refreshed the portal a couple times to see if I could see my results before I received my email. 
 
 # Summary
 
