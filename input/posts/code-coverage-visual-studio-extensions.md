@@ -34,11 +34,11 @@ Code and test at the speed you think!
 
 The green dots denote the line of code being covered and the test is passing. When hovering over the green dot you can navigate to the test code that is providing that coverage. The dots will turn to red if the tests are failing and empty dots show code that has no test coverage.
 
-> <img src="/posts/images/ncrunch-dots.png" height="500">
+> <img src="/posts/images/ncrunch-dots.png" style="max-width: 100%">
 
 NCrunch can be configured to execute tests in parallel, which gives you quick feedback. 
 
-> <img src="/posts/images/ncrunch-window-pane.png" height="500">
+> <img src="/posts/images/ncrunch-window-pane.png" style="max-width: 100%">
 
 NCrunch has many more features, but main feature I find aids development the most is the dots that visually show code coverage and then allow you to easily navigate to those tests.
 
@@ -53,15 +53,15 @@ A quote from the description:
 
 Not offering like for like features as NCrunch. This tool indicates if a line is covered by the lines on the side. Green shows code that is covered by passing tests. Amber signals that the line is covered, but not all paths. Red shows if a covering test is failing.
 
-> <img src="/posts/images/fine-code-coverage-code.png" height="500">
+> <img src="/posts/images/fine-code-coverage-code.png" style="max-width: 100%">
 
 Fine code coverage also provides a windows pane with some tabs that provide insightful data on how much lines of code is covered.
 
-> <img src="/posts/images/fine-code-coverage.png" height="400">
+> <img src="/posts/images/fine-code-coverage.png" style="max-width: 100%">
 
 To get quick feedback when working on my own projects I set the tests to run after every build.
 
-> <img src="/posts/images/fine-code-coverage-unit-tests.png" height="450">
+> <img src="/posts/images/fine-code-coverage-unit-tests.png" style="max-width: 100%">
 
 The shortcut to run a build is `Ctrl + Shift + B` which then kicks off the tests and gives me quicker feedback when coding. It's not quite the same as NCrunch, but still find it useful when developing.
 

@@ -22,7 +22,7 @@ In my [example](https://github.com/reggieray/localization-example) I start off w
 
 Also make sure you that in the properties for `WeatherSummaries.resx` that 'Custom Tool' is set to 'ResXFileCodeGenerator'. This generates the code that will be used to get the translated strings. I have highlighted the areas on the screenshot below.
 
-<img src="/posts/images/localization-example-project.PNG" height="600">
+<img src="/posts/images/localization-example-project.PNG" style="max-width: 100%">
 <br/>
 
 To decide what translation to use I add a query parameter 'lang' to the GET request which is a string with a default of 'en-US', but will also supports 'es-ES' & 'zh-CN' through the use of the `.resx` files added earlier. 
@@ -195,7 +195,7 @@ If you were to call it with `WeatherForecast?lang=es-ES` then you would get the 
 
 If you wanted to try it out for yourself you can get the code from Github using the link below. If you run the project it will be configured to run Swagger where you can call the API and play with it yourself like the screenshot below. 
 
-<img src="/posts/images/localization-example-swagger.PNG" height="600">
+<img src="/posts/images/localization-example-swagger.PNG" style="max-width: 100%">
 <br/>
 
 # Links

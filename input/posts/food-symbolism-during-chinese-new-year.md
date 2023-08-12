@@ -14,7 +14,7 @@ Below is a brief list of food and the symbolic meanings of foods eaten during Ch
 
 - Fish (whole) - The word 魚 (yú), meaning "fish", has the same pronunciation as the word 餘, which is "remain or surplus", 'having leftovers of money', an increase in prosperity
 
-> <img src="/posts/images/fish.jpg" height="300">
+> <img src="/posts/images/fish.jpg" style="max-width: 100%">
 
 - Pork (猪肉; zhūròu) - strength, wealth, abundant blessing
 
@@ -22,7 +22,7 @@ Below is a brief list of food and the symbolic meanings of foods eaten during Ch
 
 - Jiaozi- Dumplings (jiǎozi, 饺子) - wealth (the shape of the jiaozi dumplings is that of a yuanbao ingot, also the word jiǎozi shares the same pronunciation with 角子 (jiǎozi) that is a small jiao coin used in old times. Other meanings: togetherness, heavenly blessing
 
-> <img src="/posts/images/dumplings-being-made.jpg" height="300">
+> <img src="/posts/images/dumplings-being-made.jpg" style="max-width: 100%">
 
 - Glutinous Rice Cake (年糕; nián'gāo) - safety, good fortune and 'sweeten' the new year
 

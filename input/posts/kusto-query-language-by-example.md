@@ -32,7 +32,7 @@ dataset
 
 In this example we can see a spike of requests around 9:05pm, which dies around 9:30pm.
 
-> <img src="/posts/images/kusto-requests-by-status-code.png" height="450">
+> <img src="/posts/images/kusto-requests-by-status-code.png" style="max-width: 100%">
 
 ### Latency
 
@@ -52,7 +52,7 @@ dataset
 
 In this example, if we were to take the reference seriously, we see three breaches, one big spike reaching 75,000 ms and two more just going above 10,000 ms.
 
-> <img src="/posts/images/kusto-latency.png" height="450">
+> <img src="/posts/images/kusto-latency.png" style="max-width: 100%">
 
 ### Availability
 
@@ -74,7 +74,7 @@ dataset
 
 In this example, this would probably be considered poor as the availability line is way under the reference line. As this is a test demo workspace, it's probably safe to say there are quite a few responses ending in a http status code 500 or higher. In a real world scenario, this would probably need a investigation as to why.
 
-> <img src="/posts/images/kusto-availability.png" height="450">
+> <img src="/posts/images/kusto-availability.png" style="max-width: 100%">
 
 ### Count of all requests
 
@@ -93,7 +93,7 @@ dataset
 | render timechart 
 ```
 
-> <img src="/posts/images/kusto-count-of-requests.png" height="450">
+> <img src="/posts/images/kusto-count-of-requests.png" style="max-width: 100%">
 
 ### Exceptions
 
@@ -106,7 +106,7 @@ AppExceptions
 | render timechart 
 ```
 
-> <img src="/posts/images/kusto-exceptions.png" height="450">
+> <img src="/posts/images/kusto-exceptions.png" style="max-width: 100%">
 
 
 ## Syntax

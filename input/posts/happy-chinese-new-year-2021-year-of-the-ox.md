@@ -10,7 +10,7 @@ Tags:
 
 Happy new year! as the year of the Rat comes to an end it's now time for the year of the Ox. In this blog post I'll go over what Chinese New Year is and some of the traditions I have experienced during festival. 
 
-> <img src="/posts/images/chinese-new-year-ox.png" height="300">
+> <img src="/posts/images/chinese-new-year-ox.png" style="max-width: 100%">
 
 ## What is Chinese New Year?
 
@@ -24,17 +24,17 @@ It is said thousands of years ago a monster named Nian (Year) would attack villa
 
 As previously mentioend Chinese New Year is a time that family get together and on the eve of the festival families will have a big dinner called the reunion dinner which is to be considered the most important meal of the year. Also the food that is ate during this occasion carries symbolism which I have previously written in this post: [Food Symbolism during Chinese New Year](/posts/food-symbolism-during-chinese-new-year).
 
-> <img src="images/chinese-new-year-food.jpg" height="300">
+> <img src="images/chinese-new-year-food.jpg" style="max-width: 100%">
 
 
 ## 紅包 (Hóngbāo: Red envelope)
 
 Red envelopes containing money are usally given as gifts during Chinese New Year. Red is regarded as a the symbol of energy, happiness and good luck. It customarily for 紅包 to be given to children and retired people within the family.
 
-> <img src="images/red-envelope.jpg" height="300">
+> <img src="images/red-envelope.jpg" style="max-width: 100%">
 
 ## Lantern festival 
 
 Latern festival is traditionally the last day of the CNY festival. It is during this time that many lanterns will be put on display of all shapes and sizes.  
 
-> <img src="/posts/images/the-lantern-festival-dragon.jpg" height="300">
+> <img src="/posts/images/the-lantern-festival-dragon.jpg" style="max-width: 100%">
