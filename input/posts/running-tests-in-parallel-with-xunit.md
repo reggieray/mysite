@@ -51,6 +51,8 @@ public class TestClass1
 }
 ```
 
+> <img src="/posts/images/xunit-sequential-tests.gif" style="max-width: 100%">
+
 ## Parallel tests
 
 Tests in different classes are treated as separate collections and are run in parallel.
@@ -74,6 +76,8 @@ public class TestClass2
     }
 }
 ```
+
+> <img src="/posts/images/xunit-parallel-tests.gif" style="max-width: 100%">
 
 ## Sequential tests using the `[Collection]` attribute.
 
@@ -100,6 +104,45 @@ public class TestClass2
     }
 }
 ```
+
+> <img src="/posts/images/xunit-collection-tests.gif" style="max-width: 100%">
+
+## Parallel mixed with sequential tests plus 
+
+There maybe some tests that you want to run sequentially and away from the collection of parallel tests. This could be because the test in question alters or affects the result of other tests. This is also achievable by using the `[CollectionDefinition("CollectionName", DisableParallelization = true)]` attribute like below.
+
+```csharp
+public class TestClass1
+    {
+        [Fact]
+        public void Test1()
+        {
+            Thread.Sleep(3000);
+        }
+    }
+
+    public class TestClass2
+    {
+        [Fact]
+        public void Test2()
+        {
+            Thread.Sleep(5000);
+        }
+    }
+
+    [CollectionDefinition(nameof(TestClass3), DisableParallelization = true)]
+    [Collection(nameof(TestClass3))]
+    public class TestClass3
+    {
+        [Fact]
+        public void Test3()
+        {
+            Thread.Sleep(3000);
+        }
+    }
+```
+
+> <img src="/posts/images/xunit-parrallel-with-sequential-tests.gif" style="max-width: 100%">
 
 # ParallelTestFramework
 
