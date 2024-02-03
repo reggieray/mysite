@@ -23,11 +23,12 @@ After having mentioned Postman, you might be thinking why use it when I can just
 
 - Multi IDE support - It's not just supported for Visual Studio, but also vscode & Jetbrains Rider to name a few.
 - Non vendor lock-in - As mentioned in the point above, your no longer tied to using specific applications, this may come at the right time since Postman started requiring account creation to take advantage of most of it's advanced features.
-- Code documentation - It can serve documentation from within your code repository.
+- Code documentation - It can serve as documentation from within your code repository.
+- Manual testing - It can also serve as testing tool for your APIs without having to open another application. 
 
 ## What does it look like?
 
-Here is an example I created for demonstrating GET, POST, PUT & DELETE requests taken from this [example github repo](https://github.com/reggieray/http-file-examples/blob/main/http-file-examples.http).
+Here is an example I created for demonstrating GET, POST, PUT & DELETE requests taken from this [example github repo](https://github.com/reggieray/http-file-examples/blob/main/http-file-examples.http) that I created on GitHub.
 
 ```http
 @base_address = http://localhost:5295
@@ -107,7 +108,9 @@ In order to demonstrate features of `.http` files, I created a mock minimal API 
 
 Below I'll demonstrate two ways of running the `.http` files.
 
-It's worth mentioning that I added a `.env` file which can be used to get variables for the `.http` file. In the [Microsoft documentation](https://learn.microsoft.com/en-us/aspnet/core/test/http-files?view=aspnetcore-8.0#env-files) it mentions using `$dotEnv`, I found this didn't work for me, but using `$dotenv` did.  It's also worth noting I committed this file in for demo purposes. I would advise not to commit any information that has sensitive information. 
+It's worth mentioning that I added a `.env` file which can be used to get variables for the `.http` file. In the [Microsoft documentation](https://learn.microsoft.com/en-us/aspnet/core/test/http-files?view=aspnetcore-8.0#env-files) it mentions using `$dotEnv`, I found this didn't work for me, but using `$dotenv` did.  It's also worth noting I committed this file in for demo purposes. I would advise not to commit any information that has sensitive information.
+
+Below I have included some GIFs of the usage from each respective IDE.
 
 ### Visual Studio
 
