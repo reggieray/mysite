@@ -23,7 +23,7 @@ Not a solution, but a recommend approach to this is to apply critical thinking i
 
 This got me thinking, if this book was useful to me? Yes and no, a-lot of what the book covered was stuff that I was already aware of, if anything it reaffirmed what I already knew. This led me onto another question though which was what things did I learn that did have a profound impact on me as a software engineer? This is what I will go over in this blog post.
 
-# Code Katas
+# Code Katas 🥋
 
 ### What is it?
 
@@ -40,7 +40,7 @@ Although I haven't been practicing this as much lately, what I found is that it 
 - [code wars](https://www.codewars.com/) - a website designed to solve code challenges.  
 - [codinggame](https://www.codingame.com/start/) - another website designed to solve code challenges.  
 
-# Object Calisthenics
+# Object Calisthenics 💪🏽
 
 ### What is it?
 
@@ -56,7 +56,7 @@ If you've been in programming for a while, like I had before discovering this yo
 
 - [Object Calisthenics](https://williamdurand.fr/2013/06/03/object-calisthenics/) - a blog post that goes over each rule.
 
-# Extreme Programming
+# Extreme Programming 👩🏽‍💻
 
 ### What is it?
 
@@ -73,7 +73,7 @@ There wasn't one main thing from this that had a impact, but it was a collective
 - [Extreme Programming wiki](https://en.wikipedia.org/wiki/Extreme_programming) - the wiki page on extreme programming.
 - [ExtremeProgramming blog post](https://martinfowler.com/bliki/ExtremeProgramming.html) - a blog post from Martin Fowler.
 
-# Sociable Unit Tests
+# Sociable Unit Tests 🧪
 
 ### What is it?
 
