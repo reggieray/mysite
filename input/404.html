@@ -22,13 +22,37 @@ d88   888  888    888 d88   888
 | |\  | (_) | |_  |  _| (_) | |_| | | | | (_| |
 |_| \_|\___/ \__| |_|  \___/ \__,_|_| |_|\__,_|
 
-Page not found. Go back to the home page [[!;;;;https://matthewregis.dev/]matthewregis.dev].
+Page not found. Go back to the home page [[!;;;;https://matthewregis.dev/]matthewregis.dev] or type help to get list of commands.
    </template>
   <script>
     $('body').terminal({
+        help: function() {
+            this.echo('Available commands: help, hello, guid, ipv4, vpv6');
+        },
         hello: function() {
             this.echo('world');
         },
+        guid: function() {
+          fetch('https://www.uuidtools.com/api/generate/v4')
+          .then(res => res.json())
+          .then(data => {
+              this.echo(data);
+          });
+        },
+        ipv4: function() {
+          fetch('https://api.ipify.org/?format=json')
+          .then(res => res.json())
+          .then(data => {
+              this.echo(data.ip);
+          });
+        },
+        ipv6: function() {
+          fetch('https://api64.ipify.org/?format=json')
+          .then(res => res.json())
+          .then(data => {
+              this.echo(data.ip);
+          });
+        }
     }, {
         greetings: greetings.innerHTML
     });
