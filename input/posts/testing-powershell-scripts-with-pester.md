@@ -94,6 +94,16 @@ Describe 'HelloWorld' {
 - The `Should -Throw` assertion checks if the script throws the expected error under specific conditions.
 - The `-TestCases` attribute allows us to run the same test with different input parameters, enhancing test coverage.
 
+## Demo:
+
+Here I'm installing a pester and invoking the tests from a terminal. Notice the additional flag `-SkipPublisherCheck` I added on. This was because I had pester previously installed and I wanted to install the latest. To invoke pester I used `Invoke-Pester -Output Detailed .\HelloWorld.Tests.ps1`.
+
+> <img src="/posts/images/pester.gif" style="max-width: 100%">
+
+Pester has good support in [VScode](https://code.visualstudio.com/). Here I demo running the tests and also the ability to debug tests using VScode.
+
+> <img src="/posts/images/pester-2.gif" style="max-width: 100%">
+
 # Summary:
 In this guide, we've explored how to use Pester, a testing framework for PowerShell, to write unit tests for PowerShell scripts. By incorporating testing into your development workflow, you can ensure the reliability and robustness of your PowerShell scripts, leading to more stable and maintainable codebases.
 
