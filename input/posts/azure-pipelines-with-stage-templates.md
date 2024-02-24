@@ -59,6 +59,10 @@ stages:
 
 This template defines a job `RunScript` within a stage. The job executes a PowerShell script tailored to the specified environment. The environment parameter dynamically determines the configuration of the stage, ensuring flexibility and adaptability across different environments.
 
+This is what pipeline stages should look like when run.
+
+> <img src="/posts/images/azure-stage-template.png" style="max-width: 100%">
+
 ### Unlocking Benefits with Stage Templates
 
 1. Modularity: Stage templates encapsulate stage configurations, promoting code reuse and reducing duplication across pipelines.
