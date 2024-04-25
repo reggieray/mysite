@@ -452,14 +452,11 @@ In this demo I put a demo payment through by sending a request to the API, notic
 
 > <img src="https://raw.githubusercontent.com/reggieray/regis-pay/main/docs/images/manual-test.gif" style="max-width: 100%">
 
-This demo was all ran locally using Docker Desktop. If you want to test for yourself feel free to check out this [getting started](https://raw.githubusercontent.com/reggieray/regis-pay/main/docs/images/manual-test.gif) guide.
+This demo was all ran locally using Docker Desktop. If you want to test for yourself feel free to check out this [getting started](https://github.com/reggieray/regis-pay?tab=readme-ov-file#getting-started) guide.
 
 
 # Summary
 
 The Event Souring pattern is a great pattern to use IMO, but I caveat that with the **it depends** on your particular use case where **context is king 👑**. In my experience though, where I have used this pattern in the context of payments and orders in a event driven microservice environment it made perfect sense and solved a lot of business needs. That doesn't necessarily mean I would only recommend it in a event driven microservice environment, it's just an area I have seen this successfully adopted, having said that I can see this pattern also being useful in many contexts.
 
-If you want to read more about this pattern I would recommend the [Microsoft documentation](https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) and the [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) blog post by Martin Fowler. 
-
-
-
+If you want to read more about this pattern I would recommend the [Microsoft documentation](https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing) and the [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) blog post by Martin Fowler and all the code walked through in this blog post can be found [here](https://github.com/reggieray/regis-pay).
