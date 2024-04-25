@@ -6,8 +6,8 @@ Settings[Keys.Host] = "matthewregis.dev";
 Settings[Keys.DateTimeDisplayCulture] = "en-GB";
 Settings[BlogKeys.Title] = "Matthew Regis";
 Settings[BlogKeys.Description] = "Hi 👋🏽, I'm Matthew Regis.";
-Settings[BlogKeys.Intro] = "Musings 🤔 from a dotnet software engineer 👨🏽‍💻.";
+Settings[BlogKeys.Intro] = "Thoughts 💭 from a software engineer 👨🏽‍💻, mostly tech and dotnet related, but not all.";
 Settings[BlogKeys.Image] = "images/bg.jpg";
-Settings[BlogKeys.IndexPageSize] = 8;
+Settings[BlogKeys.IndexPageSize] = 12;
 #r Blog
 #t SolidState
