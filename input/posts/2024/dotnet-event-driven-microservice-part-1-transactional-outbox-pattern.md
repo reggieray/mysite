@@ -10,6 +10,8 @@ Tags:
 
 # Introduction
 
+<img src="https://raw.githubusercontent.com/reggieray/regis-pay/main/regis-pay-logo.jpg" align="left" style="margin-right: 10px" width="200px"/>
+
 This will be the start of a multi part blog post where I go over an example event-driven microservice project, using a fictional payment processor named [Regis Pay](https://github.com/reggieray/regis-pay) as an example.
 
 In this blog post I'll go over the transactional outbox pattern with Azure Cosmos DB. If you've done a bit of research on this topic before you've probably seen Microsoft documentation with the same title, which I'll link here: [Transactional Outbox pattern with Azure Cosmos DB](https://learn.microsoft.com/en-us/azure/architecture/databases/guide/transactional-outbox-cosmos). It's worth reading this as it gives a good explanation of this pattern and why you would want to use it. 

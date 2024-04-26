@@ -10,6 +10,8 @@ Tags:
 
 # Introduction
 
+<img src="https://raw.githubusercontent.com/reggieray/regis-pay/main/regis-pay-logo.jpg" align="left" style="margin-right: 10px" width="200px"/>
+
 This is part of a multi part blog post where I go over an example event-driven microservice project, using a fictional payment processor named [Regis Pay](https://github.com/reggieray/regis-pay) as an example. To see the previous blog post click this link on the [transactional outbox pattern](/posts/dotnet-event-driven-microservice-part-1-transactional-outbox-pattern).
 
 This blog post will be exploring event sourcing.
