@@ -1,0 +1,7 @@
+test_suite,test_name,scenario,duration,step_name,request_count,ok,failed,rps,min,mean,max,50_percent,75_percent,95_percent,99_percent,std_dev,data_transfer_min_kb,data_transfer_mean_kb,data_transfer_max_kb,data_transfer_all_mb
+nbomber_default_test_suite_name,nbomber_default_test_name,full_payment_journey,00:00:30,global information,30,30,0,1,9867.31,23092.84,44284.35,19283.97,30064.64,41091.07,44302.34,9144.35,0,0,0,0
+nbomber_default_test_suite_name,nbomber_default_test_name,full_payment_journey,00:00:30,create_payment_request,30,30,0,1,8.53,31.35,43.47,31.34,37.92,42.78,43.49,8.38,0,0,0,0
+nbomber_default_test_suite_name,nbomber_default_test_name,full_payment_journey,00:00:30,payment_initiated,30,30,0,1,249.86,2806.65,4899.71,2826.24,4057.09,4853.76,4902.91,1417.59,0,0,0,0
+nbomber_default_test_suite_name,nbomber_default_test_name,full_payment_journey,00:00:30,payment_created,30,30,0,1,0.01,5055.23,15167.45,5046.27,5074.94,10215.42,15171.58,3452.55,0,0,0,0
+nbomber_default_test_suite_name,nbomber_default_test_name,full_payment_journey,00:00:30,payment_settled,30,30,0,1,0,5058.94,10137.04,5062.66,5124.1,10133.5,10141.7,3450.36,0,0,0,0
+nbomber_default_test_suite_name,nbomber_default_test_name,full_payment_journey,00:00:30,payment_completed,30,30,0,1,14.77,10139.33,30394.29,10067.97,15196.16,30392.32,30408.7,9050.55,0,0,0,0
