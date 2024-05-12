@@ -5,6 +5,8 @@ Tags:
 - cosmosdb
 - patterns
 - microservice architecture 
+- dotnet
+- dotnet 8
 
 ---
 
