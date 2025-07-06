@@ -2,7 +2,7 @@ trigger:
   - master
 
 pool:
-  vmImage: "ubuntu-latest"
+  vmImage: "ubuntu-20.04"
 
 variables:
   configuration: debug
@@ -16,12 +16,6 @@ steps:
     inputs:
       packageType: "sdk"
       version: "2.2.110"
-
-  - script: |
-      sudo apt-get update
-      wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl1.1/libssl1.1_1.1.1f-1ubuntu2.22_amd64.deb
-      sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.22_amd64.deb || true
-    displayName: "Install libssl1.1"
 
   - script: dotnet tool install -g Wyam.Tool
     displayName: Install Wyam
