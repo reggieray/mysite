@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard & Bookmark Manager</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN (for simple icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dark mode styles */
+        body.dark {
+            background-color: #1a202c;
+            /* Tailwind gray-900 */
+            color: #e2e8f0;
+            /* Tailwind gray-200 */
+        }
+
+        body.dark .bg-white {
+            background-color: #2d3748;
+            /* Tailwind gray-800 */
+        }
+
+        body.dark .text-gray-800 {
+            color: #e2e8f0;
+        }
+
+        body.dark .border-gray-200 {
+            border-color: #4a5568;
+            /* Tailwind gray-600 */
+        }
+
+        body.dark .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.12);
+        }
+
+        body.dark .hover\:bg-gray-100:hover {
+            background-color: #4a5568;
+        }
+
+        body.dark .focus\:ring-blue-500:focus {
+            --tw-ring-color: #63b3ed;
+            /* Tailwind blue-300 */
+        }
+
+        body.dark .text-gray-600 {
+            color: #a0aec0;
+            /* Tailwind gray-400 */
+        }
+
+        body.dark input,
+        body.dark textarea,
+        body.dark select {
+            background-color: #4a5568;
+            border-color: #636b6f;
+            color: #e2e8f0;
+        }
+
+        body.dark input:focus,
+        body.dark textarea:focus,
+        body.dark select:focus {
+            border-color: #63b3ed;
+            box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.5);
+        }
+
+        body.dark .tab-button.active {
+            background-color: #4a5568;
+            border-color: #63b3ed;
+        }
+
+        body.dark .tab-button {
+            background-color: #2d3748;
+        }
+
+        body.dark .tab-button:hover {
+            background-color: #4a5568;
+        }
+
+        body.dark .tab-button:not(.active) {
+            border-color: #4a5568;
+        }
+
+        body.dark .bg-gray-100 {
+            background-color: #2d3748;
+        }
+
+        body.dark .hover\:bg-gray-200:hover {
+            background-color: #4a5568;
+        }
+
+        body.dark .bg-blue-200 {
+            background-color: #3182ce;
+            /* blue-600 */
+        }
+
+        body.dark .text-blue-800 {
+            color: #e0f2fe;
+            /* blue-100 */
+        }
+
+        body.dark .bg-gray-50 {
+            background-color: #1a202c;
+        }
+
+        /* Custom drag styles for visual feedback */
+        .dragging {
+            opacity: 0.5;
+            border: 2px dashed #63b3ed !important;
+            /* Tailwind blue-400 */
+        }
+
+        .drag-over-group {
+            border: 2px dashed #90cdf4;
+            /* Tailwind blue-300 */
+            background-color: rgba(99, 179, 237, 0.1);
+        }
+
+        /* Modal overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        body.dark .modal-content {
+            background-color: #2d3748;
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <div id="root" class="min-h-screen flex flex-col"></div>
+
+    <!-- React and ReactDOM CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel CDN for JSX transformation in browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect, createContext, useContext, useCallback, useRef, useMemo } = React;
+
+        // --- Utility Functions ---
+
+        // Custom hook for local storage
+        const useLocalStorage = (key, initialValue) => {
+            const [storedValue, setStoredValue] = useState(() => {
+                try {
+                    const item = window.localStorage.getItem(key);
+                    return item ? JSON.parse(item) : initialValue;
+                } catch (error) {
+                    console.error("Error reading from local storage:", error);
+                    return initialValue;
+                }
+            });
+
+            const setValue = (value) => {
+                try {
+                    const valueToStore = value instanceof Function ? value(storedValue) : value;
+                    setStoredValue(valueToStore);
+                    window.localStorage.setItem(key, JSON.stringify(valueToStore));
+                } catch (error) {
+                    console.error("Error writing to local storage:", error);
+                }
+            };
+            return [storedValue, setValue];
+        };
+
+        // Generate a unique ID
+        const generateId = () => Math.random().toString(36).substring(2, 11);
+
+        // Basic HTML bookmark parser (simplified with folder attempt)
+        const parseHtmlBookmarks = (htmlString) => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+            const result = {
+                links: [],
+                groups: {} // groupName: [links]
+            };
+
+            const processDl = (dlElement, currentGroupName = 'Imported Links') => {
+                // Convert HTMLCollection to Array to use forEach
+                Array.from(dlElement.children).forEach(child => {
+                    if (child.tagName === 'DT') {
+                        const h3 = child.querySelector('h3');
+                        if (h3) {
+                            // This is a folder, update current group name
+                            currentGroupName = h3.textContent.trim() || 'Imported Links';
+                            const nestedDl = child.querySelector('dl');
+                            if (nestedDl) {
+                                processDl(nestedDl, currentGroupName); // Recurse for nested folders
+                            }
+                        } else {
+                            // This is a link within a DT, look for A tag
+                            const a = child.querySelector('a');
+                            if (a) {
+                                const url = a.href;
+                                const title = a.textContent.trim();
+                                if (url && title) {
+                                    if (!result.groups[currentGroupName]) {
+                                        result.groups[currentGroupName] = [];
+                                    }
+                                    result.groups[currentGroupName].push({
+                                        id: generateId(),
+                                        title: title,
+                                        url: url,
+                                        tags: [], // Tags not easily extractable from standard HTML bookmark exports
+                                    });
+                                }
+                            }
+                        }
+                    } else if (child.tagName === 'DD') {
+                        // DD usually contains DL or A directly, if not handled by DT
+                        const a = child.querySelector('a');
+                        if (a) {
+                            const url = a.href;
+                            const title = a.textContent.trim();
+                            if (url && title) {
+                                if (!result.groups[currentGroupName]) {
+                                    result.groups[currentGroupName] = [];
+                                }
+                                result.groups[currentGroupName].push({
+                                    id: generateId(),
+                                    title: title,
+                                    url: url,
+                                    tags: [],
+                                });
+                            }
+                        }
+                        const nestedDl = child.querySelector('dl');
+                        if (nestedDl) {
+                            processDl(nestedDl, currentGroupName);
+                        }
+                    }
+                });
+            };
+
+            // Start processing from the top-level DL
+            const topDl = doc.querySelector('dl');
+            if (topDl) {
+                processDl(topDl);
+            } else {
+                // Fallback: if no DL, just get all links
+                doc.querySelectorAll('a').forEach(a => {
+                    const url = a.href;
+                    const title = a.textContent.trim();
+                    if (url && title) {
+                        if (!result.groups['Imported Links']) {
+                            result.groups['Imported Links'] = [];
+                        }
+                        result.groups['Imported Links'].push({
+                            id: generateId(),
+                            title: title,
+                            url: url,
+                            tags: [],
+                        });
+                    }
+                });
+            }
+
+            // Convert grouped links into flat links array for BookmarkPage
+            Object.values(result.groups).forEach(groupLinks => {
+                result.links.push(...groupLinks);
+            });
+
+            return result;
+        };
+
+        // --- Contexts ---
+
+        const ThemeContext = createContext();
+        const BookmarkContext = createContext();
+
+        // Theme Provider
+        const ThemeProvider = ({ children }) => {
+            const [theme, setTheme] = useLocalStorage('app-theme', 'light');
+
+            useEffect(() => {
+                document.body.className = theme;
+            }, [theme]);
+
+            const toggleTheme = () => {
+                setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+            };
+
+            return (
+                <ThemeContext.Provider value={{ theme, toggleTheme }}>
+                    {children}
+                </ThemeContext.Provider>
+            );
+        };
+
+        // Bookmark Provider
+        const BookmarkProvider = ({ children }) => {
+            const [appData, setAppData] = useLocalStorage('bookmark-dashboard-data', {
+                tabs: [
+                    {
+                        id: generateId(),
+                        name: 'Main', // Default dashboard name
+                        groups: [
+                            {
+                                id: generateId(),
+                                name: 'Quick Access',
+                                links: [
+                                    { id: generateId(), title: 'Google', url: 'https://www.google.com', tags: ['search', 'utility'] },
+                                    { id: generateId(), title: 'YouTube', url: 'https://www.youtube.com', tags: ['video', 'entertainment'] }
+                                ],
+                                isMinimized: false
+                            },
+                            {
+                                id: generateId(),
+                                name: 'Development',
+                                links: [
+                                    { id: generateId(), title: 'React Docs', url: 'https://react.dev', tags: ['dev', 'frontend'] },
+                                    { id: generateId(), title: 'Tailwind CSS', url: 'https://tailwindcss.com', tags: ['css', 'styling'] }
+                                ],
+                                isMinimized: false
+                            }
+                        ]
+                    }
+                ],
+                currentTabId: null,
+                dashboardColumns: 3, // Default to 3 columns
+            });
+
+            // Set initial currentTabId if not set
+            useEffect(() => {
+                if (appData.tabs.length > 0 && (!appData.currentTabId || !appData.tabs.find(t => t.id === appData.currentTabId))) {
+                    setAppData(prev => ({ ...prev, currentTabId: prev.tabs[0].id }));
+                }
+            }, [appData.tabs, appData.currentTabId]);
+
+
+            const addTab = (name) => {
+                setAppData(prev => {
+                    const newTab = { id: generateId(), name, groups: [] };
+                    const updatedTabs = [...prev.tabs, newTab];
+                    return {
+                        ...prev,
+                        tabs: updatedTabs,
+                        currentTabId: newTab.id
+                    };
+                });
+            };
+
+            const deleteTab = (tabId) => {
+                setAppData(prev => {
+                    const updatedTabs = prev.tabs.filter(tab => tab.id !== tabId);
+                    let newCurrentTabId = prev.currentTabId;
+                    if (newCurrentTabId === tabId) {
+                        newCurrentTabId = updatedTabs.length > 0 ? updatedTabs[0].id : null;
+                    }
+                    return { ...prev, tabs: updatedTabs, currentTabId: newCurrentTabId };
+                });
+            };
+
+            const setCurrentTab = (tabId) => {
+                setAppData(prev => ({ ...prev, currentTabId: tabId }));
+            };
+
+            const addLinkGroup = (tabId, name) => {
+                setAppData(prev => {
+                    const updatedTabs = prev.tabs.map(tab => {
+                        if (tab.id === tabId) {
+                            return {
+                                ...tab,
+                                groups: [...tab.groups, { id: generateId(), name, links: [], isMinimized: false }]
+                            };
+                        }
+                        return tab;
+                    });
+                    return { ...prev, tabs: updatedTabs };
+                });
+            };
+
+            const updateLinkGroup = (tabId, groupId, updatedData) => {
+                setAppData(prev => {
+                    const updatedTabs = prev.tabs.map(tab => {
+                        if (tab.id === tabId) {
+                            return {
+                                ...tab,
+                                groups: tab.groups.map(group => {
+                                    if (group.id === groupId) {
+                                        return { ...group, ...updatedData };
+                                    }
+                                    return group;
+                                })
+                            };
+                        }
+                        return tab;
+                    });
+                    return { ...prev, tabs: updatedTabs };
+                });
+            };
+
+            const deleteLinkGroup = (tabId, groupId) => {
+                // Confirm deletion is handled in the component
+                setAppData(prev => {
+                    const updatedTabs = prev.tabs.map(tab => {
+                        if (tab.id === tabId) {
+                            return {
+                                ...tab,
+                                groups: tab.groups.filter(group => group.id !== groupId)
+                            };
+                        }
+                        return tab;
+                    });
+                    return { ...prev, tabs: updatedTabs };
+                });
+            };
+
+            // Add a new bookmark (used only in Bookmarks page now)
+            const addNewBookmark = (link) => {
+                setAppData(prev => {
+                    const newLink = { id: generateId(), ...link };
+                    const updatedTabs = [...prev.tabs];
+
+                    // Find the current tab to add the link to
+                    let targetTab = updatedTabs.find(t => t.id === prev.currentTabId);
+
+                    if (!targetTab && updatedTabs.length > 0) {
+                        targetTab = updatedTabs[0];
+                    }
+
+                    if (targetTab) {
+                        if (targetTab.groups.length === 0) {
+                            // If no groups, create one
+                            targetTab.groups.push({ id: generateId(), name: 'General', links: [newLink], isMinimized: false });
+                        } else {
+                            // Add to the first group
+                            targetTab.groups[0].links.push(newLink);
+                        }
+                    } else {
+                        // No tabs exist, create a new tab and group
+                        updatedTabs.push({
+                            id: generateId(),
+                            name: 'Main',
+                            groups: [{ id: generateId(), name: 'General', links: [newLink], isMinimized: false }]
+                        });
+                    }
+
+                    return { ...prev, tabs: updatedTabs };
+                });
+            };
+
+            const addExistingLinksToGroup = (tabId, groupId, linksToAdd) => {
+                setAppData(prev => {
+                    const updatedTabs = prev.tabs.map(tab => {
+                        if (tab.id === tabId) {
+                            return {
+                                ...tab,
+                                groups: tab.groups.map(group => {
+                                    if (group.id === groupId) {
+                                        const existingLinkIds = new Set(group.links.map(l => l.id));
+                                        const newLinks = linksToAdd.filter(l => !existingLinkIds.has(l.id));
+                                        return {
+                                            ...group,
+                                            links: [...group.links, ...newLinks]
+                                        };
+                                    }
+                                    return group;
+                                })
+                            };
+                        }
+                        return tab;
+                    });
+                    return { ...prev, tabs: updatedTabs };
+                });
+            };
+
+            const updateLink = (linkId, updatedFields) => {
+                setAppData(prev => {
+                    const updatedTabs = prev.tabs.map(tab => ({
+                        ...tab,
+                        groups: tab.groups.map(group => ({
+                            ...group,
+                            links: group.links.map(link =>
+                                link.id === linkId ? { ...link, ...updatedFields } : link
+                            )
+                        }))
+                    }));
+                    return { ...prev, tabs: updatedTabs };
+                });
+            };
+
+            const deleteLink = (linkId) => {
+                setAppData(prev => {
+                    const updatedTabs = prev.tabs.map(tab => ({
+                        ...tab,
+                        groups: tab.groups.map(group => ({
+                            ...group,
+                            links: group.links.filter(link => link.id !== linkId)
+                        }))
+                    }));
+                    return { ...prev, tabs: updatedTabs };
+                });
+            };
+
+            const moveLinkGroup = (tabId, dragIndex, hoverIndex) => {
+                setAppData(prev => {
+                    const updatedTabs = prev.tabs.map(tab => {
+                        if (tab.id === tabId) {
+                            const newGroups = [...tab.groups];
+                            const [draggedGroup] = newGroups.splice(dragIndex, 1);
+                            newGroups.splice(hoverIndex, 0, draggedGroup);
+                            return { ...tab, groups: newGroups };
+                        }
+                        return tab;
+                    });
+                    return { ...prev, tabs: updatedTabs };
+                });
+            };
+
+            const moveLink = (tabId, groupId, dragIndex, hoverIndex) => {
+                setAppData(prev => {
+                    const updatedTabs = prev.tabs.map(tab => {
+                        if (tab.id === tabId) {
+                            return {
+                                ...tab,
+                                groups: tab.groups.map(group => {
+                                    if (group.id === groupId) {
+                                        const newLinks = [...group.links];
+                                        const [draggedLink] = newLinks.splice(dragIndex, 1);
+                                        newLinks.splice(hoverIndex, 0, draggedLink);
+                                        return { ...group, links: newLinks };
+                                    }
+                                    return group;
+                                })
+                            };
+                        }
+                        return tab;
+                    });
+                    return { ...prev, tabs: updatedTabs };
+                });
+            };
+
+            const moveLinkBetweenGroups = (sourceTabId, sourceGroupId, targetTabId, targetGroupId, linkId) => {
+                setAppData(prev => {
+                    let linkToMove = null;
+                    const tempTabs = JSON.parse(JSON.stringify(prev.tabs)); // Deep copy
+
+                    // Find and remove the link from the source
+                    const sourceTab = tempTabs.find(t => t.id === sourceTabId);
+                    if (sourceTab) {
+                        const sourceGroup = sourceTab.groups.find(g => g.id === sourceGroupId);
+                        if (sourceGroup) {
+                            const linkIndex = sourceGroup.links.findIndex(l => l.id === linkId);
+                            if (linkIndex > -1) {
+                                [linkToMove] = sourceGroup.links.splice(linkIndex, 1);
+                            }
+                        }
+                    }
+
+                    // Add the link to the target
+                    if (linkToMove) {
+                        const targetTab = tempTabs.find(t => t.id === targetTabId);
+                        if (targetTab) {
+                            const targetGroup = targetTab.groups.find(g => g.id === targetGroupId);
+                            if (targetGroup) {
+                                // Add to the end of the links array
+                                targetGroup.links.push(linkToMove);
+                            }
+                        }
+                    }
+
+                    return { ...prev, tabs: tempTabs };
+                });
+            };
+
+
+            const getAllBookmarks = useCallback(() => {
+                const allBookmarks = new Map(); // Use a map to prevent duplicates
+                appData.tabs.forEach(tab => {
+                    tab.groups.forEach(group => {
+                        group.links.forEach(link => {
+                            if (!allBookmarks.has(link.id)) {
+                                allBookmarks.set(link.id, link);
+                            }
+                        });
+                    });
+                });
+                return Array.from(allBookmarks.values());
+            }, [appData.tabs]);
+
+            const importBookmarks = (parsedData) => {
+                setAppData(prev => {
+                    const newTabs = [...prev.tabs];
+                    let targetTab = newTabs.find(t => t.id === prev.currentTabId) || newTabs[0];
+
+                    if (!targetTab) {
+                        targetTab = { id: generateId(), name: 'Main', groups: [] };
+                        newTabs.push(targetTab);
+                    }
+
+                    // Add links to existing or new groups based on parsed folder structure
+                    for (const groupName in parsedData.groups) {
+                        let existingGroup = targetTab.groups.find(g => g.name === groupName);
+                        if (!existingGroup) {
+                            existingGroup = { id: generateId(), name: groupName, links: [], isMinimized: false };
+                            targetTab.groups.push(existingGroup);
+                        }
+                        // Add only unique links
+                        parsedData.groups[groupName].forEach(newLink => {
+                            if (!existingGroup.links.some(l => l.url === newLink.url && l.title === newLink.title)) {
+                                existingGroup.links.push(newLink);
+                            }
+                        });
+                    }
+
+                    return { ...prev, tabs: newTabs };
+                });
+            };
+
+            const setDashboardColumns = (columns) => {
+                setAppData(prev => ({ ...prev, dashboardColumns: columns }));
+            };
+
+
+            return (
+                <BookmarkContext.Provider
+                    value={{
+                        appData,
+                        setAppData,
+                        addTab,
+                        deleteTab,
+                        setCurrentTab,
+                        addLinkGroup,
+                        updateLinkGroup,
+                        deleteLinkGroup,
+                        addNewBookmark,
+                        addExistingLinksToGroup,
+                        updateLink,
+                        deleteLink,
+                        moveLinkGroup,
+                        moveLink,
+                        moveLinkBetweenGroups,
+                        getAllBookmarks,
+                        importBookmarks,
+                        setDashboardColumns,
+                    }}
+                >
+                    {children}
+                </BookmarkContext.Provider>
+            );
+        };
+
+
+        // --- Shared Components ---
+
+        const Header = ({ page, setPage }) => {
+            const { theme, toggleTheme } = useContext(ThemeContext);
+            const getButtonClass = (buttonPage) => {
+                const baseClass = "px-4 py-2 rounded-md hover:bg-gray-100 transition-colors duration-200";
+                return page === buttonPage ? `${baseClass} font-bold text-blue-600` : baseClass;
+            }
+
+            return (
+                <header className="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-50">
+                    <h1 className="text-2xl font-bold text-blue-600">Bookmark Dashboard</h1>
+                    <nav className="flex space-x-4">
+                        <button onClick={() => setPage('dashboard')} className={getButtonClass('dashboard')}>
+                            Dashboard
+                        </button>
+                        <button onClick={() => setPage('bookmarks')} className={getButtonClass('bookmarks')}>
+                            Bookmarks
+                        </button>
+                        <button onClick={() => setPage('settings')} className={getButtonClass('settings')}>
+                            Settings
+                        </button>
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+                            title="Toggle Theme"
+                        >
+                            {theme === 'light' ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-sun"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="M4.93 4.93l1.41 1.41" /><path d="M17.66 17.66l1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="M6.34 17.66l-1.41 1.41" /><path d="M19.07 4.93l-1.41 1.41" /></svg>
+                            ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg>
+                            )}
+                        </button>
+                    </nav>
+                </header>
+            );
+        };
+
+        const Modal = ({ isOpen, onClose, children }) => {
+            if (!isOpen) return null;
+
+            return ReactDOM.createPortal(
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        {children}
+                        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>
+                </div>,
+                document.body
+            );
+        };
+
+
+        // --- Dashboard Components ---
+
+        const LinkItem = ({ link, index, groupId, tabId, isDashboardContext = true }) => {
+            const { updateLink, deleteLink, moveLink } = useContext(BookmarkContext);
+            const [isEditing, setIsEditing] = useState(false);
+            const [editTitle, setEditTitle] = useState(link.title);
+            const [editUrl, setEditUrl] = useState(link.url);
+
+            const handleUpdate = () => {
+                if (editTitle && editUrl) {
+                    updateLink(link.id, { title: editTitle, url: editUrl });
+                    setIsEditing(false);
+                }
+            };
+
+            const handleDelete = () => {
+                if (window.confirm(`Are you sure you want to delete "${link.title}"? This action cannot be undone.`)) {
+                    deleteLink(link.id);
+                }
+            }
+
+            // --- DRAG AND DROP LOGIC FOR LINKS ---
+            const handleDragStart = (e) => {
+                if (!isDashboardContext) return;
+                // Store data about the dragged link
+                e.dataTransfer.setData('application/json', JSON.stringify({
+                    type: 'link',
+                    linkId: link.id,
+                    sourceGroupId: groupId,
+                    sourceTabId: tabId,
+                    sourceIndex: index
+                }));
+                e.currentTarget.classList.add('dragging');
+            };
+
+            const handleDragEnd = (e) => {
+                if (!isDashboardContext) return;
+                e.currentTarget.classList.remove('dragging');
+            };
+
+            const handleDragOver = (e) => {
+                if (!isDashboardContext) return;
+                e.preventDefault(); // This is necessary to allow dropping
+            };
+
+            const handleDrop = (e) => {
+                if (!isDashboardContext) return;
+                e.preventDefault();
+                e.stopPropagation(); // Prevent the drop event from bubbling up to the group
+
+                const data = JSON.parse(e.dataTransfer.getData('application/json'));
+
+                // Handle reordering links WITHIN the same group
+                if (data.type === 'link' && data.sourceGroupId === groupId) {
+                    const dragIndex = data.sourceIndex;
+                    const hoverIndex = index;
+                    if (dragIndex !== hoverIndex) {
+                        moveLink(tabId, groupId, dragIndex, hoverIndex);
+                    }
+                }
+            };
+
+            if (isEditing) {
+                return (
+                    <div className="p-3 bg-gray-200 rounded-md mb-2">
+                        <input type="text" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} className="w-full p-1 mb-2 rounded border border-gray-300" placeholder="Title" />
+                        <input type="text" value={editUrl} onChange={(e) => setEditUrl(e.target.value)} className="w-full p-1 mb-2 rounded border border-gray-300" placeholder="URL" />
+                        <div className="flex justify-end space-x-2">
+                            <button onClick={() => setIsEditing(false)} className="px-3 py-1 bg-gray-400 text-white rounded hover:bg-gray-500">Cancel</button>
+                            <button onClick={handleUpdate} className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Save</button>
+                        </div>
+                    </div>
+                )
+            }
+
+            return (
+                <div
+                    className="flex items-center justify-between p-3 bg-gray-100 rounded-md shadow-sm mb-2 hover:bg-gray-200 transition-colors duration-200 group"
+                    draggable={isDashboardContext}
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                >
+                    <a href={link.url} target="_blank" rel="noopener noreferrer" className="flex-grow truncate pr-4 cursor-pointer" title={link.url}>
+                        {link.title}
+                    </a>
+                    {isDashboardContext && (
+                        <div className="flex-shrink-0 flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onClick={() => setIsEditing(true)} title="Edit Link" className="p-1 hover:text-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></svg>
+                            </button>
+                            <button onClick={handleDelete} title="Delete Link" className="p-1 hover:text-red-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                            </button>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const LinkGroup = ({ group, tabId, index: groupIndex, searchTerm }) => {
+            const { updateLinkGroup, deleteLinkGroup, moveLinkGroup, moveLinkBetweenGroups, getAllBookmarks, addExistingLinksToGroup } = useContext(BookmarkContext);
+            const [isEditing, setIsEditing] = useState(false);
+            const [editName, setEditName] = useState(group.name);
+            const [isDragOver, setIsDragOver] = useState(false);
+            const [isAssignModalOpen, setAssignModalOpen] = useState(false);
+            const [selectedLinks, setSelectedLinks] = useState(new Set());
+
+            // Auto-expand if minimized and a search term matches a link inside
+            useEffect(() => {
+                if (searchTerm && searchTerm.trim() && group.isMinimized) {
+                    const lowerCaseSearch = searchTerm.toLowerCase();
+                    // Don't auto-expand if only the group name matches, only if a link inside matches
+                    const hasMatchingLink = group.links.some(link =>
+                        link.title.toLowerCase().includes(lowerCaseSearch)
+                    );
+                    if (hasMatchingLink) {
+                        updateLinkGroup(tabId, group.id, { isMinimized: false });
+                    }
+                }
+            }, [searchTerm]);
+
+            const linksToDisplay = useMemo(() => {
+                if (!searchTerm || !searchTerm.trim()) {
+                    return group.links; // No search, show all links
+                }
+                const lowerCaseSearch = searchTerm.toLowerCase();
+
+                // If group name matches, show all links
+                if (group.name.toLowerCase().includes(lowerCaseSearch)) {
+                    return group.links;
+                }
+
+                // Otherwise, filter to show only matching links
+                return group.links.filter(link =>
+                    link.title.toLowerCase().includes(lowerCaseSearch)
+                );
+            }, [searchTerm, group.links, group.name]);
+
+
+            const handleUpdateName = () => {
+                if (editName.trim()) {
+                    updateLinkGroup(tabId, group.id, { name: editName.trim() });
+                    setIsEditing(false);
+                }
+            };
+
+            const handleDelete = () => {
+                if (window.confirm(`Are you sure you want to delete the group "${group.name}"? This action cannot be undone.`)) {
+                    deleteLinkGroup(tabId, group.id);
+                }
+            };
+
+            const toggleMinimize = () => {
+                updateLinkGroup(tabId, group.id, { isMinimized: !group.isMinimized });
+            };
+
+            const handleAssignSubmit = () => {
+                const allBookmarks = getAllBookmarks();
+                const linksToAdd = allBookmarks.filter(link => selectedLinks.has(link.id));
+                addExistingLinksToGroup(tabId, group.id, linksToAdd);
+                setAssignModalOpen(false);
+                setSelectedLinks(new Set());
+            };
+
+            // --- DRAG AND DROP LOGIC FOR GROUPS ---
+            const handleDragStart = (e) => {
+                e.stopPropagation(); // Prevents the link item drag handler from firing
+                e.dataTransfer.setData('application/json', JSON.stringify({
+                    type: 'group',
+                    groupId: group.id,
+                    sourceTabId: tabId,
+                    sourceIndex: groupIndex
+                }));
+                // The 'dragging' class is applied to the main container
+                e.currentTarget.closest('.link-group-container').classList.add('dragging');
+            };
+
+            const handleDragEnd = (e) => {
+                e.currentTarget.closest('.link-group-container').classList.remove('dragging');
+            };
+
+            const handleDragOver = (e) => {
+                e.preventDefault();
+                // Check if a link from another group is being dragged over
+                try {
+                    const data = JSON.parse(e.dataTransfer.getData('application/json'));
+                    if (data.type === 'link' && data.sourceGroupId !== group.id) {
+                        setIsDragOver(true);
+                    }
+                } catch (err) { /* In-flight drag from other windows might not have data */ }
+            };
+
+            const handleDragLeave = () => {
+                setIsDragOver(false);
+            };
+
+            const handleDrop = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsDragOver(false);
+                const data = JSON.parse(e.dataTransfer.getData('application/json'));
+
+                // Case 1: A GROUP is dropped on this group (for reordering)
+                if (data.type === 'group') {
+                    const dragIndex = data.sourceIndex;
+                    const hoverIndex = groupIndex;
+                    if (dragIndex !== hoverIndex) {
+                        moveLinkGroup(tabId, dragIndex, hoverIndex);
+                    }
+                }
+                // Case 2: A LINK is dropped on this group (from another group)
+                else if (data.type === 'link' && data.sourceGroupId !== group.id) {
+                    moveLinkBetweenGroups(
+                        data.sourceTabId,
+                        data.sourceGroupId,
+                        tabId,
+                        group.id,
+                        data.linkId
+                    );
+                }
+            };
+
+            return (
+                <>
+                    <div
+                        className={`link-group-container bg-white p-4 rounded-lg shadow-md flex flex-col h-full ${isDragOver ? 'drag-over-group' : ''}`}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop} // This one handler manages both group reorder and link moves
+                    >
+                        <div className="group-header flex justify-between items-center mb-4">
+                            <div className="flex items-center gap-2 flex-grow min-w-0">
+                                <button onClick={toggleMinimize} title={group.isMinimized ? "Expand" : "Minimize"} className="flex-shrink-0 p-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className={`transition-transform duration-200 ${group.isMinimized ? 'rotate-[-90deg]' : 'rotate-0'}`}><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                {isEditing ? (
+                                    <input
+                                        type="text"
+                                        value={editName}
+                                        onChange={(e) => setEditName(e.target.value)}
+                                        onBlur={handleUpdateName}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleUpdateName()}
+                                        autoFocus
+                                        className="text-xl font-bold w-full p-1 -ml-1 rounded"
+                                    />
+                                ) : (
+                                    <h2
+                                        className="text-xl font-bold truncate pr-2 cursor-move"
+                                        draggable="true"
+                                        onDragStart={handleDragStart}
+                                        onDragEnd={handleDragEnd}
+                                        title={group.name}
+                                    >
+                                        {group.name}
+                                    </h2>
+                                )}
+                            </div>
+
+                            <div className="flex-shrink-0 flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onClick={() => setAssignModalOpen(true)} title="Assign Bookmarks" className="p-1 hover:text-green-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                </button>
+                                <button onClick={() => setIsEditing(!isEditing)} title="Edit Group Name" className="p-1 hover:text-blue-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /></svg>
+                                </button>
+                                <button onClick={handleDelete} title="Delete Group" className="p-1 hover:text-red-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                        {!group.isMinimized && (
+                            <div className="links-list flex-grow min-h-[50px]">
+                                {linksToDisplay.length > 0 ? (
+                                    linksToDisplay.map(link => {
+                                        const originalIndex = group.links.findIndex(l => l.id === link.id);
+                                        return <LinkItem key={link.id} link={link} index={originalIndex} groupId={group.id} tabId={tabId} />
+                                    })
+                                ) : (
+                                    searchTerm && searchTerm.trim() && <p className="text-sm text-gray-500 text-center italic">No matching links.</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                    <Modal isOpen={isAssignModalOpen} onClose={() => setAssignModalOpen(false)}>
+                        <div className="w-[500px]">
+                            <h3 className="text-xl font-bold mb-4">Assign Bookmarks to "{group.name}"</h3>
+                            <div className="max-h-64 overflow-y-auto border rounded-md p-2 mb-4">
+                                {getAllBookmarks().map(link => (
+                                    <div key={link.id} className="flex items-center p-2 hover:bg-gray-100 rounded">
+                                        <input
+                                            type="checkbox"
+                                            id={`assign-${link.id}`}
+                                            checked={selectedLinks.has(link.id)}
+                                            onChange={(e) => {
+                                                const newSet = new Set(selectedLinks);
+                                                if (e.target.checked) {
+                                                    newSet.add(link.id);
+                                                } else {
+                                                    newSet.delete(link.id);
+                                                }
+                                                setSelectedLinks(newSet);
+                                            }}
+                                            className="mr-3 h-4 w-4"
+                                        />
+                                        <label htmlFor={`assign-${link.id}`} className="flex-grow">{link.title}</label>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="flex justify-end gap-2">
+                                <button onClick={() => setAssignModalOpen(false)} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+                                <button onClick={handleAssignSubmit} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Assign Selected</button>
+                            </div>
+                        </div>
+                    </Modal>
+                </>
+            );
+        };
+
+        const DashboardPage = () => {
+            const { appData, addTab, deleteTab, setCurrentTab, addLinkGroup } = useContext(BookmarkContext);
+            const { tabs, currentTabId, dashboardColumns } = appData;
+            const [newTabName, setNewTabName] = useState('');
+            const [newGroupName, setNewGroupName] = useState('');
+            const [searchTerm, setSearchTerm] = useState('');
+
+            const currentTab = tabs.find(tab => tab.id === currentTabId);
+
+            const handleAddTab = () => {
+                if (newTabName.trim()) {
+                    addTab(newTabName.trim());
+                    setNewTabName('');
+                }
+            };
+
+            const handleAddGroup = () => {
+                if (newGroupName.trim() && currentTabId) {
+                    addLinkGroup(currentTabId, newGroupName.trim());
+                    setNewGroupName('');
+                }
+            }
+
+            const filteredGroups = currentTab?.groups.filter(group => {
+                if (!searchTerm.trim()) return true;
+                const lowerCaseSearch = searchTerm.toLowerCase();
+                const groupNameMatch = group.name.toLowerCase().includes(lowerCaseSearch);
+                const linkMatch = group.links.some(link => link.title.toLowerCase().includes(lowerCaseSearch));
+                return groupNameMatch || linkMatch;
+            }) || [];
+
+            const gridColsClass = {
+                1: 'grid-cols-1', 2: 'grid-cols-2', 3: 'grid-cols-3',
+                4: 'grid-cols-4', 5: 'grid-cols-5', 6: 'grid-cols-6'
+            }[dashboardColumns] || 'grid-cols-3';
+
+            return (
+                <div className="p-6 flex-grow">
+                    <div className="flex items-center space-x-2 border-b-2 border-gray-200 pb-4 mb-4 overflow-x-auto">
+                        {tabs.map(tab => (
+                            <div key={tab.id} className="relative group">
+                                <button
+                                    onClick={() => setCurrentTab(tab.id)}
+                                    className={`tab-button whitespace-nowrap px-4 py-2 rounded-t-lg border-2 border-b-0 ${tab.id === currentTabId ? 'active font-semibold' : 'border-transparent'}`}
+                                >
+                                    {tab.name}
+                                </button>
+                                {tabs.length > 1 && (
+                                    <button
+                                        onClick={() => window.confirm(`Delete tab "${tab.name}"?`) && deleteTab(tab.id)}
+                                        className="absolute top-0 right-0 p-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        title="Delete Tab"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                        <div className="flex items-center pl-4">
+                            <input type="text" value={newTabName} onChange={e => setNewTabName(e.target.value)} placeholder="New Tab Name" className="p-1 border rounded-l" />
+                            <button onClick={handleAddTab} className="p-1 bg-blue-500 text-white rounded-r hover:bg-blue-600">Add Tab</button>
+                        </div>
+                    </div>
+                    {currentTab ? (
+                        <>
+                            <div className="mb-6 flex items-center gap-4 flex-wrap">
+                                <div className="flex">
+                                    <input type="text" value={newGroupName} onChange={e => setNewGroupName(e.target.value)} placeholder="New Group Name" className="p-2 border rounded-l-md w-64" />
+                                    <button onClick={handleAddGroup} className="p-2 bg-green-500 text-white rounded-r-md hover:bg-green-600">Add Group</button>
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Search this dashboard..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="p-2 border rounded-md flex-grow"
+                                />
+                            </div>
+                            <div className={`grid ${gridColsClass} gap-6`}>
+                                {filteredGroups.map((group, index) => (
+                                    <LinkGroup key={group.id} group={group} tabId={currentTab.id} index={index} searchTerm={searchTerm} />
+                                ))}
+                            </div>
+                            {currentTab.groups.length > 0 && filteredGroups.length === 0 && (
+                                <div className="text-center text-gray-500 mt-10">
+                                    <p>No groups match your search.</p>
+                                </div>
+                            )}
+                            {currentTab.groups.length === 0 && (
+                                <div className="text-center text-gray-500 mt-10">
+                                    <p>This dashboard is empty. Add a group to get started.</p>
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <div className="text-center text-gray-500 mt-10">
+                            <h2 className="text-2xl font-semibold mb-2">Welcome!</h2>
+                            <p>Create your first tab to begin organizing your bookmarks.</p>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // --- Bookmarks Page ---
+        const BookmarksPage = () => {
+            const { getAllBookmarks, addNewBookmark, updateLink, deleteLink } = useContext(BookmarkContext);
+            const [allLinks, setAllLinks] = useState([]);
+            const [searchTerm, setSearchTerm] = useState('');
+            const [newLinkData, setNewLinkData] = useState({ title: '', url: '', tags: '' });
+
+            useEffect(() => {
+                setAllLinks(getAllBookmarks());
+            }, [getAllBookmarks]);
+
+            const handleAddBookmark = (e) => {
+                e.preventDefault();
+                if (newLinkData.title && newLinkData.url) {
+                    addNewBookmark({
+                        ...newLinkData,
+                        tags: newLinkData.tags.split(',').map(t => t.trim()).filter(Boolean)
+                    });
+                    setNewLinkData({ title: '', url: '', tags: '' });
+                    // Refresh the list
+                    setAllLinks(getAllBookmarks());
+                }
+            }
+
+            const filteredLinks = allLinks.filter(link =>
+                link.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                link.url.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            return (
+                <div className="p-6">
+                    <h2 className="text-2xl font-bold mb-4">All Bookmarks</h2>
+                    <div className="mb-6 flex gap-4">
+                        <input
+                            type="text"
+                            placeholder="Search all bookmarks..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full p-2 border rounded-md"
+                        />
+                    </div>
+
+                    <form onSubmit={handleAddBookmark} className="mb-6 p-4 bg-white rounded-lg shadow-sm grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <input type="text" placeholder="Title" value={newLinkData.title} onChange={e => setNewLinkData({ ...newLinkData, title: e.target.value })} className="p-2 border rounded-md" required />
+                        <input type="url" placeholder="https://example.com" value={newLinkData.url} onChange={e => setNewLinkData({ ...newLinkData, url: e.target.value })} className="p-2 border rounded-md" required />
+                        <input type="text" placeholder="Tags (comma-separated)" value={newLinkData.tags} onChange={e => setNewLinkData({ ...newLinkData, tags: e.target.value })} className="p-2 border rounded-md" />
+                        <button type="submit" className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Add Bookmark</button>
+                    </form>
+
+                    <div className="space-y-2">
+                        {filteredLinks.map(link => (
+                            <LinkItem key={link.id} link={link} isDashboardContext={false} />
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Settings Page ---
+        const SettingsPage = () => {
+            const { appData, setDashboardColumns, importBookmarks, setAppData } = useContext(BookmarkContext);
+            const { dashboardColumns } = appData;
+
+            const handleImport = (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const content = e.target.result;
+                        const parsedData = parseHtmlBookmarks(content);
+                        importBookmarks(parsedData);
+                        alert(`${parsedData.links.length} bookmarks imported into the current tab.`);
+                    };
+                    reader.readAsText(file);
+                }
+            };
+
+            const handleExport = () => {
+                const dataStr = JSON.stringify(appData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+                const exportFileDefaultName = 'dashboard-bookmarks.json';
+
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+            };
+
+            const handleLoad = (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            // Basic validation
+                            if (data.tabs && data.currentTabId !== undefined) {
+                                setAppData(data);
+                                alert('Data loaded successfully!');
+                            } else {
+                                alert('Invalid data file.');
+                            }
+                        } catch (error) {
+                            alert('Error parsing file. Make sure it is a valid JSON export.');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+
+            const handleReset = () => {
+                if (window.confirm("ARE YOU SURE? This will delete all your tabs, groups, and bookmarks. This action cannot be undone.")) {
+                    window.localStorage.removeItem('bookmark-dashboard-data');
+                    window.location.reload();
+                }
+            }
+
+            return (
+                <div className="p-6 max-w-4xl mx-auto">
+                    <h2 className="text-2xl font-bold mb-6">Settings</h2>
+                    <div className="space-y-8">
+                        {/* Display Settings */}
+                        <div className="p-4 bg-white rounded-lg shadow-sm">
+                            <h3 className="text-lg font-semibold mb-3">Display</h3>
+                            <label htmlFor="columns" className="block mb-2">Dashboard Columns:</label>
+                            <select
+                                id="columns"
+                                value={dashboardColumns}
+                                onChange={(e) => setDashboardColumns(parseInt(e.target.value, 10))}
+                                className="p-2 border rounded-md"
+                            >
+                                {[1, 2, 3, 4, 5, 6].map(n => <option key={n} value={n}>{n}</option>)}
+                            </select>
+                        </div>
+
+                        {/* Data Management */}
+                        <div className="p-4 bg-white rounded-lg shadow-sm">
+                            <h3 className="text-lg font-semibold mb-3">Data Management</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label htmlFor="import" className="block mb-2">Import from Browser (HTML):</label>
+                                    <input type="file" id="import" accept=".html" onChange={handleImport} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                                </div>
+                                <div>
+                                    <p className="mb-2">Export All Data (JSON):</p>
+                                    <button onClick={handleExport} className="w-full p-2 bg-green-500 text-white rounded-md hover:bg-green-600">Export Data</button>
+                                </div>
+                                <div>
+                                    <label htmlFor="load" className="block mb-2">Load Data from JSON:</label>
+                                    <input type="file" id="load" accept=".json" onChange={handleLoad} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Danger Zone */}
+                        <div className="p-4 bg-white border-2 border-red-400 rounded-lg shadow-sm">
+                            <h3 className="text-lg font-semibold text-red-600 mb-3">Danger Zone</h3>
+                            <button onClick={handleReset} className="w-full p-2 bg-red-600 text-white rounded-md hover:bg-red-700">Reset All Data</button>
+                            <p className="text-sm text-gray-600 mt-2">This will permanently delete all your data and cannot be undone. Make sure to export your data first.</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [page, setPage] = useLocalStorage('app-page', 'dashboard');
+
+            const renderPage = () => {
+                switch (page) {
+                    case 'bookmarks':
+                        return <BookmarksPage />;
+                    case 'settings':
+                        return <SettingsPage />;
+                    case 'dashboard':
+                    default:
+                        return <DashboardPage />;
+                }
+            };
+
+            return (
+                <ThemeProvider>
+                    <BookmarkProvider>
+                        <div className="flex flex-col min-h-screen">
+                            <Header page={page} setPage={setPage} />
+                            <main className="flex-grow">
+                                {renderPage()}
+                            </main>
+                        </div>
+                    </BookmarkProvider>
+                </ThemeProvider>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+    </script>
+</body>
+
+</html>
