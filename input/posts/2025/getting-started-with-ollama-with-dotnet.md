@@ -3,8 +3,6 @@ Published: 08/21/2025
 Tags: 
 - dotnet
 - dotnet 9
-- blazor
-- Blazor WASM
 - ollama
 - llama
 - ai
