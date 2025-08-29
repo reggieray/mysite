@@ -16,6 +16,8 @@ Ollama is an open-source runtime that makes it easy to run large language models
 
 The quickest way to started with Ollama is using the docker image, which is what I'll explore later on. Its' worth noting though unless you have setup Ollama to make use of your GPU, you will experience latency. These AI models are designed to make use of GPUs.
 
+If you're running the docker image on a machine that has GPU available then you can follow the instructions [here](https://hub.docker.com/r/ollama/ollama).
+
 If your interested on running these on something like a raspberry pi, it might be worth exploring the [NVIDIA Jetson Nano](https://www.nvidia.com/en-gb/autonomous-machines/embedded-systems/jetson-nano/product-development/). These are mini computers have been designed to run AI models.
 
 What you should end up with at the end of this is a dotnet console app like below... although it may not get things right like below 😄
