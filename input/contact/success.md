@@ -1,6 +1,6 @@
 Title: Thanks for sending me a message
 ShowInNavbar: false
 ---
-<?# Giphy 8xgqLTTgWqHWU /?>
+Thanks for getting in touch 👍 
 
-[Back](/Contact)
+[Home](/)
