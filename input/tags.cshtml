@@ -1,5 +1,5 @@
 Title: Tags
-ArchiveSources: posts/**/*
+ArchiveSources: posts/20*/**/*
 ArchiveKey: Tags
 ArchiveDestination: => $"tags/{Document.GetString(Statiq.Common.Keys.GroupKey).ToLower().Replace(' ', '-').Replace('.', '-')}/index.html"
 DestinationPath: tags/index.html

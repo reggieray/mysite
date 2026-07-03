@@ -91,6 +91,9 @@ Layout: /_Layout.cshtml
                 // Convert dictionary object to array of objects
                 allPosts = Object.keys(data).map(function(key) {
                     return data[key];
+                }).filter(function(post) {
+                    // Exclude raw HTML report files from search index
+                    return post.link && !post.link.startsWith('/posts/html/');
                 });
                 
                 // If there's an active query in the URL, trigger it
