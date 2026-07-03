@@ -22,7 +22,7 @@ steps:
     displayName: Zip Site
     inputs:
       rootFolderOrFile: "$(Agent.BuildDirectory)/s/output"
-      includeRootFolder: true
+      includeRootFolder: false
       archiveType: "zip"
       archiveFile: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
       replaceExistingArchive: true
