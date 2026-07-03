@@ -3,14 +3,21 @@
   --background-image-opacity: 0.8;
 }
 
-/* Base toggle button styling for both themes */
+/* Base toggle button styling for both themes and header flex alignment */
+#header nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  height: 100% !important;
+  top: 0 !important;
+}
+
 .theme-toggle-btn {
-  display: inline-block !important;
-  vertical-align: middle !important;
-  text-align: center !important;
-  width: 2.4em !important;
-  height: 2.4em !important;
-  line-height: 2.4em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 2.2em !important;
+  height: 2.2em !important;
   border-radius: 50% !important;
   background-color: rgba(255, 255, 255, 0.08) !important;
   color: rgba(255, 255, 255, 0.85) !important;
@@ -19,12 +26,9 @@
   box-shadow: none !important;
   margin-right: 0.8em !important;
   padding: 0 !important;
-  font-size: 0.9em !important;
+  font-size: 0.95em !important;
   transition: all 0.2s ease-in-out !important;
-}
-
-.theme-toggle-btn i {
-  line-height: 2.4em !important;
+  line-height: 1 !important;
 }
 
 .theme-toggle-btn:hover {
