@@ -1,0 +1,64 @@
+Title: Archive
+ArchiveSources: posts/**/*
+ArchiveOrderKey: Published
+ArchiveOrderDescending: true
+ArchivePageSize: 12
+Layout: /_Layout.cshtml
+---
+@using Statiq.Common
+@using Statiq.Web
+
+@{
+    var children = Document.GetChildren();
+}
+
+<h2>Archive</h2>
+@if (children != null && children.Any())
+{
+    @foreach (IDocument post in children)
+    {
+        var published = post.GetDateTime("Published");
+        var tags = post.GetList<string>("Tags");
+
+        <section style="margin-bottom: 2.5em;">
+            <h3 class="major" style="margin-bottom: 0.5em;"><a href="@post.GetLink()">@post.GetString("Title")</a></h3>
+            @if (published != default(DateTime))
+            {
+                <p style="margin-bottom: 0.8em; font-size: 0.9em; opacity: 0.8;"><em>Published on @published.ToLongDateString()</em></p>
+            }
+            @if (tags != null)
+            {
+                <div style="margin-top: 0.8em; display: flex; flex-wrap: wrap; gap: 0.5em;">
+                    @foreach (string tag in tags.Take(5))
+                    {
+                        <a href="/tags/@(tag.ToLower().Replace(" ", "-").Replace(".", "-"))" class="button small">@tag</a>
+                    }
+                </div>
+            }
+        </section>
+        <hr style="margin: 2em 0;" />
+    }
+}
+else
+{
+    <p>No posts found.</p>
+}
+
+@{
+    var previous = Document.GetDocument(Keys.Previous);
+    var next = Document.GetDocument(Keys.Next);
+}
+
+@if (previous != null || next != null)
+{
+    <div style="text-align: center; padding: 1.5em 0;">
+        @if (previous != null)
+        {
+            <a href="@previous.GetLink()" class="button">← Newer Posts</a>
+        }
+        @if (next != null)
+        {
+            <a href="@next.GetLink()" class="button">Older Posts →</a>
+        }
+    </div>
+}

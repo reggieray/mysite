@@ -1,12 +1,10 @@
-Write-Output "Installing WYAM..."
-dotnet tool install -g Wyam.Tool
+Write-Output "Building site with Statiq Web..."
 
-$confirmation = Read-Host "Build preview?:"
+$confirmation = Read-Host "Build preview? (y/n)"
 if ($confirmation -eq 'y') {
-    Write-Output "Building site preview..."
-    wyam
-    wyam preview
-}else{
+    Write-Output "Building site with preview server..."
+    dotnet run -- preview
+} else {
     Write-Output "Building site..."
-    wyam
+    dotnet run
 }

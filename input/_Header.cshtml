@@ -1,0 +1,23 @@
+@using Statiq.Common
+@using Statiq.Web
+@{
+    var title = Document.GetString("Title");
+    var siteTitle = Document.GetString(WebKeys.SiteTitle) ?? "Matthew Regis";
+    var description = Document.GetString(WebKeys.SiteDescription) ?? "";
+    var intro = Document.GetString("Intro") ?? "";
+}
+
+<!-- Banner -->
+<section id="banner">
+    <div class="inner">
+        <h2>@(string.IsNullOrWhiteSpace(title) ? siteTitle : title)</h2>
+        @if(!string.IsNullOrWhiteSpace(intro))
+        {
+            <p>@intro</p>
+        }
+        else if(!string.IsNullOrWhiteSpace(description))
+        {
+            <p>@description</p>
+        }
+    </div>
+</section>

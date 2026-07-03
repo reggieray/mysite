@@ -1,17 +1,17 @@
 @{
-    Layout = "_Layout.cshtml";
+    Layout = "/_Layout.cshtml";
 }
 
 @section PostHead {
-    @Html.Partial("_PostHead.cshtml")
+    @await Html.PartialAsync("_PostHead")
 }
 
 @section Header {
-    @Html.Partial("_PostHeader.cshtml")
+    @await Html.PartialAsync("_PostHeader")
 }
 
 @RenderBody()
 
-@Html.Partial("_PostFooter.cshtml")
+@await Html.PartialAsync("_PostFooter")
 
-@Html.Partial("_PostScripts.cshtml")
+@await Html.PartialAsync("_PostScripts")

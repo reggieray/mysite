@@ -9,18 +9,13 @@ variables:
   platform: x64
 
 steps:
-  - task: DotNetCoreInstaller@0
-    displayName: Install .NET Core SDK
-    name: install_dotnetcore_sdk
-    enabled: true
+  - task: UseDotNet@2
+    displayName: Install .NET SDK
     inputs:
       packageType: "sdk"
-      version: "2.2.110"
+      version: "8.x"
 
-  - script: dotnet tool install -g Wyam.Tool
-    displayName: Install Wyam
-
-  - script: wyam
+  - script: dotnet run
     displayName: Build Site
 
   - task: ArchiveFiles@2

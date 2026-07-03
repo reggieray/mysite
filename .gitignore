@@ -1,5 +1,27 @@
+# Build results
+output/
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# IDE files
+.vs/
+*.suo
+*.user
+*.sln.docstates
+
+# NuGet
+packages/
+*.nupkg
+
+# Wyam legacy files (can be removed later)
 tools/**
 !tools/packages.config
-output/
 pages/
 config.wyam.*
+
+# Statiq directories
+cache/
+temp/

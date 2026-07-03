@@ -1,8 +1,10 @@
+@using Statiq.Common
+@using Statiq.Web
 @{ 
-	string Title = Model.WithoutSettings.String(BlogKeys.Title); 
-	string PageTitle = Context.String(BlogKeys.Title) + (string.IsNullOrWhiteSpace(Title) ? string.Empty : " - " + Title);
+	string title = Document.GetString("Title");
+	string siteTitle = Document.GetString(WebKeys.SiteTitle) ?? "Matthew Regis";
+	string pageTitle = siteTitle + (string.IsNullOrWhiteSpace(title) ? string.Empty : " - " + title);
 }
-
 
 <!DOCTYPE HTML>
 <!--
@@ -10,46 +12,60 @@
 	html5up.net | @@ajlkn
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
-<html>
+<html lang="en">
 	<head>
-		<title>@PageTitle</title>
+		<title>@pageTitle</title>
 		<meta charset="utf-8" />
-		<link rel='icon' href='favicon.ico' type='image/x-icon' />
+		<link rel='icon' href='/favicon.ico' type='image/x-icon' />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<!--[if lte IE 8]><script src="@Context.GetLink("/assets/js/ie/html5shiv.js")"></script><![endif]-->
-		<link rel="stylesheet" href="@Context.GetLink("/assets/sass/main.css")" />
-		<!--[if lte IE 9]><link rel="stylesheet" href="@Context.GetLink("/assets/sass/ie9.css")" /><![endif]-->
-		<!--[if lte IE 8]><link rel="stylesheet" href="@Context.GetLink("/assets/sass/ie8.css")" /><![endif]-->
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<link rel="stylesheet" href="/assets/css/theme-switcher.css" />
+		<script>
+			(function() {
+				var theme = localStorage.getItem('theme') || 'dark';
+				if (theme === 'light') {
+					document.documentElement.classList.add('light-theme');
+					window.addEventListener('DOMContentLoaded', function() {
+						document.body.classList.add('light-theme');
+					});
+				}
+			})();
+		</script>
 		<meta name="theme-color" content="#5d2b90" />
         @if(IsSectionDefined("PostHead"))
         {
             @RenderSection("PostHead")
         }
         
-        @if(Model.ContainsKey(BlogKeys.Image))
+        @if(Document.ContainsKey("Image"))
 		{
 			<style>
 				body {
-					background-image: linear-gradient(to top, rgba(46, 49, 65, 0.8), rgba(46, 49, 65, 0.8)), url(@Context.GetLink(Model.String(BlogKeys.Image)));
+					background-image: linear-gradient(to top, rgba(46, 49, 65, 0.8), rgba(46, 49, 65, 0.8)), url(@Document.GetString("Image"));
 				}
 				@@media screen and (max-width: 1280px) {
 					#banner, #wrapper > header {
-						background-image: linear-gradient(to top, rgba(46, 49, 65, 0.8), rgba(46, 49, 65, 0.8)), url(@Context.GetLink(Model.String(BlogKeys.Image)));
+						background-image: linear-gradient(to top, rgba(46, 49, 65, 0.8), rgba(46, 49, 65, 0.8)), url(@Document.GetString("Image"));
 					}
 				}
 			</style>
 		}
-        @Html.Partial("_Head")
+        @await Html.PartialAsync("_Head")
 	</head>
 	<body>
 
 		<!-- Page Wrapper -->
 			<div id="page-wrapper">
 				
-				<!-- Header -->
 				<header id="header">
-					<h1><a href="@Context.GetLink("/")">@Context.String(BlogKeys.Title)</a></h1>
+					<h1><a href="/">@siteTitle</a></h1>
 					<nav>
+						<a href="/search" class="theme-toggle-btn" aria-label="Search">
+							<i class="fa fa-search"></i>
+						</a>
+						<a href="javascript:void(0);" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+							<i class="fa fa-adjust"></i>
+						</a>
 						<a href="#menu"></a>
 					</nav>
 				</header>
@@ -58,7 +74,7 @@
 				<nav id="menu">
 					<div class="inner">
 						<ul class="links">
-							@Html.Partial("_Navbar")
+							@await Html.PartialAsync("_Navbar")
 						</ul>
 						<a href="#" class="close">Close</a>
 					</div>
@@ -70,7 +86,7 @@
 				}
 				else
 				{
-					@Html.Partial("_Header")                                           
+					@await Html.PartialAsync("_Header")
 				}
 
 				<!-- Main -->
@@ -89,19 +105,38 @@
 				
 				<!-- Footer -->
                 <footer id="footer">
-                    @Html.Partial("_Footer")
+                    @await Html.PartialAsync("_Footer")
                 </footer>
 			</div>
 
 		    <!-- Scripts -->
-			<script src="@Context.GetLink("assets/js/skel.min.js")"></script>
-			<script src="@Context.GetLink("assets/js/jquery.min.js")"></script>
-			<script src="@Context.GetLink("assets/js/jquery.scrollex.min.js")"></script>
-			<script src="@Context.GetLink("assets/js/util.js")"></script>
-            <!--[if lte IE 8]><script src="@Context.GetLink("/assets/js/ie/respond.min.js")"></script><![endif]-->
-            <script src="@Context.GetLink("/assets/js/main.js")"></script>
+			<script src="/assets/js/skel.min.js"></script>
+			<script src="/assets/js/jquery.min.js"></script>
+			<script src="/assets/js/jquery.scrollex.min.js"></script>
+			<script src="/assets/js/util.js"></script>
+            <script src="/assets/js/main.js"></script>
 
-            @Html.Partial("_Scripts")
+            @await Html.PartialAsync("_Scripts")
+
+			<script>
+				document.addEventListener('DOMContentLoaded', function() {
+					var toggleBtn = document.getElementById('theme-toggle');
+					if (toggleBtn) {
+						toggleBtn.addEventListener('click', function() {
+							var isLight = document.body.classList.contains('light-theme');
+							if (isLight) {
+								document.body.classList.remove('light-theme');
+								document.documentElement.classList.remove('light-theme');
+								localStorage.setItem('theme', 'dark');
+							} else {
+								document.body.classList.add('light-theme');
+								document.documentElement.classList.add('light-theme');
+								localStorage.setItem('theme', 'light');
+							}
+						});
+					}
+				});
+			</script>
 
 	</body>
 

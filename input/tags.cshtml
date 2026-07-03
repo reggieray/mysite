@@ -1,0 +1,45 @@
+Title: Tags
+ArchiveSources: posts/**/*
+ArchiveKey: Tags
+ArchiveDestination: => $"tags/{Document.GetString(Statiq.Common.Keys.GroupKey).ToLower().Replace(' ', '-').Replace('.', '-')}/index.html"
+DestinationPath: tags/index.html
+Layout: /_Layout.cshtml
+---
+@using Statiq.Common
+@using Statiq.Web
+
+@{
+    bool isGroup = Document.ContainsKey(Keys.GroupKey);
+}
+
+@if (isGroup)
+{
+    var tag = Document.GetString(Keys.GroupKey);
+    var posts = Document.GetChildren();
+    
+    <h2>Posts Tagged: @tag</h2>
+    @foreach (IDocument post in posts.OrderByDescending(x => x.GetDateTime("Published")))
+    {
+        var published = post.GetDateTime("Published");
+        <section style="margin-bottom: 2.5em;">
+            <h3 class="major" style="margin-bottom: 0.5em;"><a href="@post.GetLink()">@post.GetString("Title")</a></h3>
+            @if (published != default(DateTime))
+            {
+                <p style="margin-bottom: 0.8em; font-size: 0.9em; opacity: 0.8;"><em>Published on @published.ToLongDateString()</em></p>
+            }
+        </section>
+        <hr style="margin: 2em 0;" />
+    }
+}
+else
+{
+    <h2>All Tags</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 0.8em; padding: 1.5em 0;">
+        @foreach (IDocument tagGroup in Document.GetChildren().OrderBy(x => x.GetString(Keys.GroupKey)))
+        {
+            var tag = tagGroup.GetString(Keys.GroupKey);
+            var count = tagGroup.GetChildren().Count();
+            <a href="@tagGroup.GetLink()" class="button small">@tag <span style="opacity: 0.7; margin-left: 0.3em; font-size: 0.9em;">(@count)</span></a>
+        }
+    </div>
+}
