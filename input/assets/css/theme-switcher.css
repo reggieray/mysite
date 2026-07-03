@@ -210,3 +210,70 @@ body.light-theme .theme-toggle-btn:hover {
   background-color: rgba(15, 23, 42, 0.12) !important;
   color: #0f172a !important;
 }
+
+/* Smooth transitions for theme switching */
+body, #page-wrapper, #header, #header nav a, .button, .wrapper.style2, #banner {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease !important;
+}
+
+/* Prevent flash of transition animations on page load */
+body.no-transition,
+body.no-transition * {
+  transition: none !important;
+}
+
+/* Copy to Clipboard Button styling */
+pre {
+  position: relative !important;
+}
+
+.copy-code-btn {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 0 !important;
+  border-radius: 4px !important;
+  width: 2.2em !important;
+  height: 2.2em !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, background-color 0.2s, color 0.2s;
+  z-index: 10;
+}
+
+pre:hover .copy-code-btn {
+  opacity: 1;
+}
+
+.copy-code-btn:hover {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+}
+
+.copy-code-btn.copied {
+  background: #10b981 !important; /* Green success indicator */
+  color: #ffffff !important;
+}
+
+/* Light Mode Overrides for Copy Button */
+body.light-theme .copy-code-btn {
+  background: rgba(15, 23, 42, 0.06) !important;
+  color: #475569 !important;
+}
+
+body.light-theme .copy-code-btn:hover {
+  background: rgba(15, 23, 42, 0.12) !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .copy-code-btn.copied {
+  background: #10b981 !important;
+  color: #ffffff !important;
+}
+

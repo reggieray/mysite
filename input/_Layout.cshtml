@@ -32,6 +32,25 @@
 			})();
 		</script>
 		<meta name="theme-color" content="#5d2b90" />
+
+		<!-- SEO & Social Media Card Previews -->
+		<meta name="description" content="@(Document.GetString("Lead") ?? "Thoughts from a software engineer, mostly tech and dotnet related.")" />
+		<meta property="og:title" content="@pageTitle" />
+		<meta property="og:description" content="@(Document.GetString("Lead") ?? "Thoughts from a software engineer, mostly tech and dotnet related.")" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="@(Document.GetLink(true))" />
+		@if(Document.ContainsKey("Image"))
+		{
+			<meta property="og:image" content="@(Document.GetLink("Image", true))" />
+		}
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="@pageTitle" />
+		<meta name="twitter:description" content="@(Document.GetString("Lead") ?? "Thoughts from a software engineer, mostly tech and dotnet related.")" />
+		@if(Document.ContainsKey("Image"))
+		{
+			<meta name="twitter:image" content="@(Document.GetLink("Image", true))" />
+		}
+
         @if(IsSectionDefined("PostHead"))
         {
             @RenderSection("PostHead")
@@ -52,7 +71,7 @@
 		}
         @await Html.PartialAsync("_Head")
 	</head>
-	<body>
+	<body class="no-transition">
 
 		<!-- Page Wrapper -->
 			<div id="page-wrapper">
@@ -120,6 +139,7 @@
 
 			<script>
 				document.addEventListener('DOMContentLoaded', function() {
+					// 1. Theme toggle functionality
 					var toggleBtn = document.getElementById('theme-toggle');
 					if (toggleBtn) {
 						toggleBtn.addEventListener('click', function() {
@@ -135,6 +155,60 @@
 							}
 						});
 					}
+
+					// 2. Remove transition block after page load to prevent initial flash
+					setTimeout(function() {
+						document.body.classList.remove('no-transition');
+					}, 100);
+
+					// 3. Global Keyboard Shortcut for Search ('/' key)
+					document.addEventListener('keydown', function(e) {
+						if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+							e.preventDefault();
+							var searchInput = document.getElementById('search-input');
+							if (searchInput) {
+								searchInput.focus();
+							} else {
+								window.location.href = '/search';
+							}
+						}
+					});
+
+					// 4. Add "Copy to Clipboard" Buttons to Pre Code Blocks
+					var preBlocks = document.querySelectorAll('pre');
+					preBlocks.forEach(function(pre) {
+						if (pre.querySelector('.copy-code-btn')) return; // Avoid duplicate buttons
+						
+						var button = document.createElement('button');
+						button.className = 'copy-code-btn';
+						button.setAttribute('aria-label', 'Copy code');
+						button.innerHTML = '<i class="fa fa-copy"></i>';
+						pre.appendChild(button);
+						
+						button.addEventListener('click', function() {
+							var code = pre.querySelector('code');
+							var text = code ? code.innerText : pre.innerText;
+							
+							navigator.clipboard.writeText(text).then(function() {
+								button.innerHTML = '<i class="fa fa-check"></i>';
+								button.classList.add('copied');
+								setTimeout(function() {
+									button.innerHTML = '<i class="fa fa-copy"></i>';
+									button.classList.remove('copied');
+								}, 2000);
+							}).catch(function(err) {
+								console.error('Failed to copy code: ', err);
+							});
+						});
+					});
+
+					// 5. Lazy-load all images for performance optimization
+					var images = document.querySelectorAll('img');
+					images.forEach(function(img) {
+						if (!img.hasAttribute('loading')) {
+							img.setAttribute('loading', 'lazy');
+						}
+					});
 				});
 			</script>
 

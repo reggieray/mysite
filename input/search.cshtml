@@ -55,7 +55,19 @@ Layout: /_Layout.cshtml
     }
     body.light-theme .autocomplete-item:hover, body.light-theme .autocomplete-item.active {
         background-color: #f1f5f9;
-        color: #0f172a !important;
+    }
+    
+    /* Search keyword highlighting */
+    mark {
+        background-color: rgba(99, 102, 241, 0.25) !important; /* Soft Indigo background */
+        color: #818cf8 !important; /* Light Indigo text */
+        padding: 0 0.2em;
+        border-radius: 3px;
+    }
+    
+    body.light-theme mark {
+        background-color: rgba(79, 70, 229, 0.12) !important;
+        color: #4f46e5 !important; /* Deep Indigo text */
     }
 </style>
 
@@ -259,18 +271,19 @@ Layout: /_Layout.cshtml
 
             var html = '';
             matches.forEach(function(post) {
-                var title = escapeHtml(post.title || 'Untitled');
+                var titleText = post.title || 'Untitled';
+                var highlightedTitle = highlightMatch(titleText, query);
                 var url = post.link || '#';
                 
                 html += '<section style="margin-bottom: 2em;">';
-                html += '    <h3 class="major" style="margin-bottom: 0.5em;"><a href="' + url + '">' + title + '</a></h3>';
+                html += '    <h3 class="major" style="margin-bottom: 0.5em;"><a href="' + url + '">' + highlightedTitle + '</a></h3>';
                 
                 // Render tags as small clickable buttons
                 if (post.tags && Array.isArray(post.tags) && post.tags.length > 0) {
                     html += '    <div style="margin-top: 0.6em; margin-bottom: 0.8em; display: flex; flex-wrap: wrap; gap: 0.4em;">';
                     post.tags.forEach(function(tag) {
                         var slug = tag.toLowerCase().replace(/ /g, "-").replace(/\./g, "-");
-                        html += '        <a href="/tags/' + slug + '" class="button small" style="font-size: 0.75em; padding: 0 0.8em; height: 1.8em; line-height: 1.8em; text-transform: lowercase;">' + escapeHtml(tag) + '</a>';
+                        html += '        <a href="/tags/' + slug + '" class="button small" style="font-size: 0.75em; padding: 0 0.8em; height: 1.8em; line-height: 1.8em; text-transform: lowercase;">' + highlightMatch(tag, query) + '</a>';
                     });
                     html += '    </div>';
                 }
@@ -280,6 +293,14 @@ Layout: /_Layout.cshtml
                 html += '<hr style="margin: 1.5em 0;" />';
             });
             resultsList.innerHTML = html;
+        }
+
+        function highlightMatch(text, query) {
+            if (!query) return escapeHtml(text);
+            var escapedQuery = query.trim().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'); // Escape regex special chars
+            if (!escapedQuery) return escapeHtml(text);
+            var regex = new RegExp('(' + escapedQuery + ')', 'gi');
+            return escapeHtml(text).replace(regex, '<mark>$1</mark>');
         }
 
         function escapeHtml(str) {
