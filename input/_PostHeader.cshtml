@@ -3,6 +3,11 @@
     var lead = Document.GetString("Lead");
     var published = Document.GetDateTime("Published");
     var tags = Document.GetList<string>("Tags");
+
+    // Calculate Reading Time at compile time (assuming ~220 words per minute)
+    string content = await Document.GetContentStringAsync();
+    int wordCount = content.Split(new[] { ' ', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Length;
+    int readingTime = (int)Math.Max(1, Math.Ceiling(wordCount / 220.0));
 }
 
 <section id="banner">
@@ -14,8 +19,23 @@
     }                  
     @if (published != default(DateTime))
     {
-        <p><em>Published on @published.ToLongDateString()</em></p>
+        <p style="margin-bottom: 0.5em;">
+            <em>Published on @published.ToLongDateString()</em>
+            <span style="margin: 0 0.5em; opacity: 0.6;">•</span>
+            <span>⏱️ @readingTime min read</span>
+        </p>
     }
+
+    <!-- Text-to-Speech Controls -->
+    <div id="tts-controls-wrapper" style="margin-top: 1.2em; margin-bottom: 1.5em; display: none; gap: 0.5em; align-items: center; flex-wrap: wrap;">
+        <button id="read-aloud-btn" class="button small special" style="height: 2.2em; line-height: 2.2em; padding: 0 1em; font-size: 0.85em; display: inline-flex; align-items: center; gap: 0.5em; text-transform: none;">
+            <i class="fa fa-volume-up"></i> <span>Read Aloud</span>
+        </button>
+        <button id="stop-read-btn" class="button small" style="height: 2.2em; line-height: 2.2em; padding: 0 1em; font-size: 0.85em; display: none; align-items: center; gap: 0.5em; text-transform: none;">
+            <i class="fa fa-stop"></i> <span>Stop</span>
+        </button>
+    </div>
+
     @if (tags != null)
     {
         @foreach (string tag in tags.OrderBy(x => x))
@@ -24,5 +44,4 @@
         } 
     } 
   </div>
-
 </section>
