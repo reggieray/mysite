@@ -20,17 +20,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="/assets/css/main.css" />
 		<link rel="stylesheet" href="/assets/css/theme-switcher.css" />
-		<script>
-			(function() {
-				var theme = localStorage.getItem('theme') || 'dark';
-				if (theme === 'light') {
-					document.documentElement.classList.add('light-theme');
-					window.addEventListener('DOMContentLoaded', function() {
-						document.body.classList.add('light-theme');
-					});
-				}
-			})();
-		</script>
+
 		<meta name="theme-color" content="#5d2b90" />
 
 		<!-- SEO & Social Media Card Previews -->
@@ -73,6 +63,15 @@
         @await Html.PartialAsync("_Head")
 	</head>
 	<body class="no-transition">
+		<script>
+			(function() {
+				var theme = localStorage.getItem('theme') || 'dark';
+				if (theme === 'light') {
+					document.body.classList.add('light-theme');
+					document.documentElement.classList.add('light-theme');
+				}
+			})();
+		</script>
 
 		<!-- Page Wrapper -->
 			<div id="page-wrapper">
