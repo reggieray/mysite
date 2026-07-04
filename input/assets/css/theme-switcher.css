@@ -277,3 +277,97 @@ body.light-theme .copy-code-btn.copied {
   color: #ffffff !important;
 }
 
+/* --- LIGHT MODE CONTRAST & READABILITY OVERRIDES --- */
+
+/* High specificity color resets for Light Mode page contents */
+body.light-theme #wrapper > .wrapper > .inner {
+  color: #334155 !important;
+}
+
+body.light-theme #wrapper > .wrapper > .inner h1,
+body.light-theme #wrapper > .wrapper > .inner h2,
+body.light-theme #wrapper > .wrapper > .inner h3,
+body.light-theme #wrapper > .wrapper > .inner h4,
+body.light-theme #wrapper > .wrapper > .inner h5,
+body.light-theme #wrapper > .wrapper > .inner h6,
+body.light-theme #wrapper > .wrapper > .inner strong,
+body.light-theme #wrapper > .wrapper > .inner b {
+  color: #0f172a !important;
+}
+
+body.light-theme #wrapper > .wrapper > .inner p,
+body.light-theme #wrapper > .wrapper > .inner li,
+body.light-theme #wrapper > .wrapper > .inner blockquote,
+body.light-theme #wrapper > .wrapper > .inner td,
+body.light-theme #wrapper > .wrapper > .inner th {
+  color: #334155 !important;
+}
+
+/* Features grid in Light Mode */
+body.light-theme .features article {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-theme .features article h3,
+body.light-theme .features article p,
+body.light-theme .features article li {
+  color: #334155 !important;
+}
+
+body.light-theme .features article h3 {
+  color: #0f172a !important;
+}
+
+/* Light mode table styling */
+body.light-theme th {
+  color: #0f172a !important;
+  border-bottom-color: #cbd5e1 !important;
+}
+
+body.light-theme td {
+  border-bottom-color: #e2e8f0 !important;
+}
+
+/* Outline menu toggle border styling in Light Mode */
+body.light-theme #header nav a[href="#menu"] {
+  box-shadow: inset 0 0 0 2px rgba(15, 23, 42, 0.15) !important;
+  color: #0f172a !important;
+}
+
+body.light-theme #header nav a[href="#menu"]:hover {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Ensure code blocks look like deep dark editor terminals in both modes */
+body.light-theme pre,
+body.light-theme pre code,
+body.light-theme code {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+/* Global button outline styling for Light Mode */
+body.light-theme .button {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+body.light-theme .button:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .button.special {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+  border-color: #4f46e5 !important;
+}
+
+body.light-theme .button.special:hover {
+  background-color: #4338ca !important;
+}
+
+
