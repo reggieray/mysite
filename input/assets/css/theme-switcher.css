@@ -49,8 +49,6 @@ body.light-theme {
 
 body.light-theme #page-wrapper {
   background-color: transparent !important;
-  backdrop-filter: blur(3px) !important;
-  -webkit-backdrop-filter: blur(3px) !important;
 }
 
 body.light-theme #banner,

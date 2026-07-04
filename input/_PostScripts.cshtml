@@ -33,18 +33,6 @@
     }
 </style>
 
-<!-- Floating TTS Mini-Player Panel -->
-<div id="floating-tts-bar" style="position: fixed; bottom: 2em; right: 2em; background: rgba(46, 49, 65, 0.96); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 40px; padding: 0.6em 1.2em; display: none; gap: 0.8em; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.45); z-index: 9999; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: all 0.3s ease-in-out;">
-    <span style="font-size: 0.8em; color: rgba(255,255,255,0.85); font-weight: 600; display: inline-flex; align-items: center; gap: 0.5em; letter-spacing: 0.05em; text-transform: uppercase;">
-        <i class="fa fa-volume-up" style="color: #6366f1;"></i> Reading Post
-    </span>
-    <button id="float-play-btn" class="button small special" style="height: 2.2em; line-height: 2.2em; padding: 0 1em; font-size: 0.8em; border-radius: 20px; text-transform: none; display: inline-flex; align-items: center; gap: 0.4em; box-shadow: none;">
-        <i class="fa fa-pause"></i> <span>Pause</span>
-    </button>
-    <button id="float-stop-btn" class="button small" style="height: 2.2em; line-height: 2.2em; padding: 0 1em; font-size: 0.8em; border-radius: 20px; text-transform: none; display: inline-flex; align-items: center; gap: 0.4em; box-shadow: none;">
-        <i class="fa fa-stop"></i> <span>Stop</span>
-    </button>
-</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
