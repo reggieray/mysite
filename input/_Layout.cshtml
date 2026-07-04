@@ -34,6 +34,7 @@
 		<meta name="theme-color" content="#5d2b90" />
 
 		<!-- SEO & Social Media Card Previews -->
+		<link rel="canonical" href="@(Document.GetLink(true))" />
 		<meta name="description" content="@(Document.GetString("Lead") ?? "Thoughts from a software engineer, mostly tech and dotnet related.")" />
 		<meta property="og:title" content="@pageTitle" />
 		<meta property="og:description" content="@(Document.GetString("Lead") ?? "Thoughts from a software engineer, mostly tech and dotnet related.")" />
@@ -59,11 +60,11 @@
         @if(Document.ContainsKey("Image"))
 		{
 			<style>
-				body {
+				body:not(.light-theme) {
 					background-image: linear-gradient(to top, rgba(46, 49, 65, 0.8), rgba(46, 49, 65, 0.8)), url(@Document.GetString("Image"));
 				}
 				@@media screen and (max-width: 1280px) {
-					#banner, #wrapper > header {
+					body:not(.light-theme) #banner, body:not(.light-theme) #wrapper > header {
 						background-image: linear-gradient(to top, rgba(46, 49, 65, 0.8), rgba(46, 49, 65, 0.8)), url(@Document.GetString("Image"));
 					}
 				}
@@ -209,8 +210,39 @@
 							img.setAttribute('loading', 'lazy');
 						}
 					});
+
+					// 6. Register PWA Service Worker for offline support and speed
+					if ('serviceWorker' in navigator) {
+						window.addEventListener('load', function() {
+							navigator.serviceWorker.register('/sw.js').then(function(reg) {
+								console.log('ServiceWorker registered with scope: ', reg.scope);
+							}).catch(function(err) {
+								console.error('ServiceWorker registration failed: ', err);
+							});
+						});
+					}
+
+					// 7. Back to Top smooth scroll button handler
+					var backToTopBtn = document.getElementById('back-to-top');
+					if (backToTopBtn) {
+						window.addEventListener('scroll', function() {
+							if (window.scrollY > 400) {
+								backToTopBtn.style.display = 'inline-flex';
+							} else {
+								backToTopBtn.style.display = 'none';
+							}
+						});
+						backToTopBtn.addEventListener('click', function() {
+							window.scrollTo({ top: 0, behavior: 'smooth' });
+						});
+					}
 				});
 			</script>
+
+			<!-- Floating Back to Top Button -->
+			<button id="back-to-top" class="button small" style="position: fixed; bottom: 5.5em; right: 2.2em; display: none; z-index: 9998; border-radius: 50%; width: 2.8em; height: 2.8em; padding: 0; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-transform: none; border-color: rgba(255,255,255,0.2);">
+				<i class="fa fa-chevron-up"></i>
+			</button>
 
 	</body>
 

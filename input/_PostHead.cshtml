@@ -1,2 +1,30 @@
+@using Statiq.Common
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/androidstudio.min.css" />
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+<!-- Structured JSON-LD Article Schema for Google Search Rich Results -->
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "BlogPosting",
+  "headline": "@Document.GetString("Title")",
+  "description": "@(Document.GetString("Lead") ?? "Thoughts from a software engineer, mostly tech and dotnet related.")",
+  "datePublished": "@(Document.GetDateTime("Published") != default ? Document.GetDateTime("Published").ToString("yyyy-MM-dd") : "")",
+  "author": {
+    "@@type": "Person",
+    "name": "Matthew Regis"
+  },
+  "publisher": {
+    "@@type": "Organization",
+    "name": "Matthew Regis",
+    "logo": {
+      "@@type": "ImageObject",
+      "url": "https://matthewregis.dev/favicon.ico"
+    }
+  },
+  "mainEntityOfPage": {
+    "@@type": "WebPage",
+    "@@id": "@(Document.GetLink(true))"
+  }
+}
+</script>
