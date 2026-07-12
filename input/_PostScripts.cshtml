@@ -44,14 +44,18 @@
         // Main buttons (in banner)
         var controlsWrapper = document.getElementById('tts-controls-wrapper');
         var playBtn = document.getElementById('read-aloud-btn');
+        var rewindBtn = document.getElementById('rewind-btn');
+        var forwardBtn = document.getElementById('forward-btn');
         var stopBtn = document.getElementById('stop-read-btn');
         
         // Floating buttons
         var floatBar = document.getElementById('floating-tts-bar');
         var floatPlayBtn = document.getElementById('float-play-btn');
+        var floatRewindBtn = document.getElementById('float-rewind-btn');
+        var floatForwardBtn = document.getElementById('float-forward-btn');
         var floatStopBtn = document.getElementById('float-stop-btn');
         
-        if (!controlsWrapper || !playBtn || !stopBtn || !floatBar || !floatPlayBtn || !floatStopBtn) return;
+        if (!controlsWrapper || !playBtn || !rewindBtn || !forwardBtn || !stopBtn || !floatBar || !floatPlayBtn || !floatRewindBtn || !floatForwardBtn || !floatStopBtn) return;
         
         // Show banner controls since Text-to-Speech is supported
         controlsWrapper.style.display = 'flex';
@@ -181,20 +185,56 @@
             updateUIState();
         }
 
+        function skipTo(index) {
+            if (utterances.length === 0) return;
+            
+            // Bounds check
+            if (index < 0) {
+                index = 0;
+            }
+            if (index >= utterances.length) {
+                resetTTS();
+                return;
+            }
+            
+            // Clean up handlers on the current utterance to avoid trigger of onend/onerror
+            var currentUtter = utterances[currentUtteranceIndex];
+            if (currentUtter) {
+                currentUtter.onend = null;
+                currentUtter.onerror = null;
+            }
+            
+            synth.cancel();
+            currentUtteranceIndex = index;
+            
+            if (state === 'paused') {
+                state = 'playing';
+            }
+            
+            speakNext();
+            updateUIState();
+        }
+
         function updateUIState() {
             if (state === 'playing') {
                 playBtn.innerHTML = '<i class="fa fa-pause"></i> <span>Pause</span>';
                 floatPlayBtn.innerHTML = '<i class="fa fa-pause"></i> <span>Pause</span>';
                 stopBtn.style.display = 'inline-flex';
+                rewindBtn.style.display = 'inline-flex';
+                forwardBtn.style.display = 'inline-flex';
                 floatBar.style.display = 'flex';
             } else if (state === 'paused') {
                 playBtn.innerHTML = '<i class="fa fa-play"></i> <span>Resume</span>';
                 floatPlayBtn.innerHTML = '<i class="fa fa-play"></i> <span>Resume</span>';
                 stopBtn.style.display = 'inline-flex';
+                rewindBtn.style.display = 'inline-flex';
+                forwardBtn.style.display = 'inline-flex';
                 floatBar.style.display = 'flex';
             } else if (state === 'stopped') {
                 playBtn.innerHTML = '<i class="fa fa-volume-up"></i> <span>Read Aloud</span>';
                 stopBtn.style.display = 'none';
+                rewindBtn.style.display = 'none';
+                forwardBtn.style.display = 'none';
                 floatBar.style.display = 'none';
             }
         }
@@ -214,6 +254,14 @@
             }
         });
         
+        // Handle rewind and forward clicks (main buttons)
+        rewindBtn.addEventListener('click', function() {
+            skipTo(currentUtteranceIndex - 1);
+        });
+        forwardBtn.addEventListener('click', function() {
+            skipTo(currentUtteranceIndex + 1);
+        });
+        
         // Handle stop clicks (main button)
         stopBtn.addEventListener('click', function() {
             resetTTS();
@@ -230,6 +278,14 @@
                 state = 'playing';
                 updateUIState();
             }
+        });
+
+        // Sync rewind and forward clicks (floating buttons)
+        floatRewindBtn.addEventListener('click', function() {
+            skipTo(currentUtteranceIndex - 1);
+        });
+        floatForwardBtn.addEventListener('click', function() {
+            skipTo(currentUtteranceIndex + 1);
         });
 
         // Sync stop clicks (floating button)
