@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>591 Property Rental Viewer Pro</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #e74c3c;
+            --bg: #f4f7f6;
+            --border: #dce1e6;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: monospace;
+            resize: vertical;
+            box-sizing: border-box;
+            background-color: #fafafa;
+            margin-bottom: 15px;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .control-group label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #555;
+        }
+        .control-group input, .control-group select {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .control-group input[type="number"] {
+            width: 90px;
+        }
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+            height: 38px;
+        }
+        .btn:hover { 
+            background: #1a252f; 
+        }
+        .btn.secondary {
+            background: #95a5a6;
+        }
+        .btn.secondary:hover {
+            background: #7f8c8d;
+        }
+        .btn.lang-toggle {
+            background: #27ae60;
+        }
+        .btn.lang-toggle:hover {
+            background: #2ecc71;
+        }
+        .stats {
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #555;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        /* --- Carousel Styles --- */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            background: #eee;
+        }
+        .carousel-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        .carousel-img.active {
+            display: block;
+        }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .carousel-btn:hover {
+            background: rgba(0,0,0,0.8);
+        }
+        .carousel-prev { left: 10px; }
+        .carousel-next { right: 10px; }
+        .carousel-indicator {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75em;
+        }
+        /* ---------------------- */
+
+        .card-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .price {
+            color: var(--secondary);
+            font-size: 1.6em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: #2c3e50;
+        }
+        .info-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .pill {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            color: #495057;
+            font-weight: 500;
+        }
+        .pill.highlight-floor {
+            background: #e3f2fd;
+            border-color: #bbdefb;
+            color: #1976d2;
+            font-weight: 600;
+        }
+        .pill.highlight-community {
+            background: #fff3e0;
+            border-color: #ffe0b2;
+            color: #ef6c00;
+            font-weight: 600;
+        }
+        .tags {
+            margin-top: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .tag {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ffcdd2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Property Rental Viewer Pro</h1>
+            <p>Paste multiple JSON blocks below. The tool will auto-merge, remove duplicates, and translate.</p>
+        </div>
+        
+        <div class="panel">
+            <textarea id="jsonInput" placeholder='Paste your JSON payload(s) here. You can paste multiple responses one after the other...'></textarea>
+            
+            <div class="toolbar">
+                <button class="btn" onclick="loadData()">Load Data</button>
+                <button class="btn secondary" onclick="loadHardcodedData()">Load Default Data</button>
+                <button class="btn secondary" onclick="document.getElementById('jsonInput').value = ''">Clear Input</button>
+                
+                <div style="flex-grow: 1;"></div> 
+
+                <button class="btn lang-toggle" id="langBtn" onclick="toggleLanguage()">Language: English</button>
+
+                <div class="control-group">
+                    <label>Sort By</label>
+                    <select id="sortSelect" onchange="renderCards()">
+                        <option value="default">Default</option>
+                        <option value="priceAsc">Price: Low to High</option>
+                        <option value="priceDesc">Price: High to Low</option>
+                        <option value="floorAsc">Floor: Low to High</option>
+                        <option value="floorDesc">Floor: High to Low</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Min Floor</label>
+                    <input type="number" id="minFloor" placeholder="Any" oninput="renderCards()">
+                </div>
+                <div class="control-group">
+                    <label>Max Floor</label>
+                    <input type="number" id="maxFloor" placeholder="Any" oninput="renderCards()">
+                </div>
+                <div class="control-group">
+                    <label>Max Price</label>
+                    <input type="number" id="maxPrice" placeholder="Any" oninput="renderCards()">
+                </div>
+            </div>
+        </div>
+
+        <div class="stats" id="statsDisplay">Loaded 0 properties.</div>
+        <div id="propertyGrid" class="grid"></div>
+    </div>
+
+    <script>
+        // Global store for parsed properties
+        let allProperties = []; 
+
+        // --- HELPER FUNCTIONS ---
+        function getFloor(item) {
+            if (!item.layout_info) return 0;
+            const floorInfo = item.layout_info.find(i => i.includes('F/'));
+            return floorInfo ? parseInt(floorInfo.split('F')[0], 10) : 0;
+        }
+
+        function getPrice(item) {
+            if (!item.price) return 0;
+            return parseInt(item.price.toString().replace(/,/g, ''), 10);
+        }
+
+        // --- TRANSLATION DICTIONARY ---
+        let currentLang = 'en'; // 'en' or 'zh'
+
+        const realEstateDict = {
+            // Tags
+            "近捷運": "Near MRT",
+            "新上架": "Newly Listed",
+            "拎包入住": "Ready to Move In",
+            "近商圈": "Near Shopping Area",
+            "有電梯": "Elevator",
+            "隨時可遷入": "Move-in Anytime",
+            "可開伙": "Cooking Allowed",
+            "租金補貼": "Rent Subsidy Available",
+            "有車位": "Parking Available",
+            "可養寵物": "Pets Allowed",
+            "社會住宅": "Social Housing",
+            "可報稅": "Tax Declarable",
+            "可入籍": "Household Registration",
+            "南北通透": "Good Ventilation",
+            "高齡友善": "Elderly Friendly",
+            // Layout Types
+            "整層住家": "Apartment",
+            "獨立套房": "Studio",
+            "辦公": "Office",
+            "開放式格局": "Open Layout",
+            // Building/Location Keywords
+            "愛情河左岸": "Love River Left Bank",
+            "真愛碼頭": "True Love Pier",
+            "愛河": "Love River",
+            "高雄女中": "Kaohsiung Girls' High",
+            // Common Title Keywords
+            "高樓層": "High Floor",
+            "高樓": "High Floor",
+            "景觀": "View",
+            "平車": "Flat Parking",
+            "車位": "Parking",
+            "裝潢": "Furnished",
+            "海景": "Sea View",
+            "家具": "Furniture",
+            "家電": "Appliances",
+            "全配": "Fully Equipped",
+            "可租補": "Subsidized",
+            "免仲介費": "No Agency Fee",
+            "免仲": "No Agency Fee",
+            "免服務費": "No Service Fee",
+            "無敵": "Unbeatable",
+            "首排": "First Row",
+            "飯店": "Hotel",
+            "管理": "Management",
+            "兩房": "2 Bed",
+            "三房": "3 Bed",
+            "一房": "1 Bed",
+            "美景": "Beautiful View"
+        };
+
+        function translateText(text) {
+            if (currentLang === 'zh') return text;
+            if (!text) return text;
+            
+            let translated = text;
+
+            // Regex for Layout e.g., "2房1廳1衛" -> "2 Bed 1 Liv 1 Bath"
+            translated = translated.replace(/(\d+)房(\d+)廳(\d+)衛/g, '$1 Bed $2 Liv $3 Bath');
+            translated = translated.replace(/(\d+)房(\d+)廳/g, '$1 Bed $2 Liv');
+            
+            // Regex for Floor e.g., "27F/32F" -> "Floor 27 / 32"
+            translated = translated.replace(/(\d+)F\/(\d+)F/g, 'Floor $1 / $2');
+            
+            // Regex for Size e.g., "21.579坪" -> "21.579 Ping"
+            translated = translated.replace(/([0-9.]+)坪/g, '$1 Ping');
+
+            // Regex for distance
+            translated = translated.replace(/距離本社區約\s*(\d+)?\s*公尺/g, 'Approx $1 meters from community');
+
+            // Replace dictionary terms
+            for (const [zh, en] of Object.entries(realEstateDict)) {
+                // Global replace using split/join to avoid regex escaping issues
+                translated = translated.split(zh).join(en);
+            }
+
+            return translated;
+        }
+
+        function toggleLanguage() {
+            const btn = document.getElementById('langBtn');
+            if (currentLang === 'en') {
+                currentLang = 'zh';
+                btn.innerText = 'Language: 中文 (繁)';
+            } else {
+                currentLang = 'en';
+                btn.innerText = 'Language: English';
+            }
+            renderCards(); 
+        }
+
+        // --- HARDCODED DATA PAYLOADS ---
+        const hardcodedPayloads = [
+            {"status":1,"msg":"ok","data":{"community_name":"愛情河左岸","community_id":101669,"total":58,"current_page":1,"last_page":3,"per_page":20,"list":[{"rent_id":21742213,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3958637,"type":1,"kind":1,"kind_str":"整層住家","title":"💖奢華遊艇風愛河首排兩房｜愛情河左岸","layout_info":["2房1廳1衛","21.579坪","27F/32F"],"deposit":"押金二個月","browse_num":0,"price":"30,000","is_host":0,"tags":["近捷運","新上架","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","租金補貼"],"tag_type":2,"tag_str":"1天前上架","pictures":["https://img2.591.com.tw/house/2026/02/09/177062089142904206.jpg!510x400.jpg","https://img2.591.com.tw/house/2025/04/18/174497365913007006.jpg!510x400.jpg","https://img2.591.com.tw/house/2025/04/18/174497365907495808.jpg!510x400.jpg","https://img2.591.com.tw/house/2025/04/18/174497365908885701.jpg!510x400.jpg","https://img1.591.com.tw/house/2025/04/18/174497365899200008.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21741470,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3958637,"type":1,"kind":1,"kind_str":"整層住家","title":"與愛河為鄰🌊現代輕奢風3房平車","layout_info":["3房2廳2衛","42.316坪","21F/32F"],"deposit":"押金二個月","browse_num":0,"price":"38,000","is_host":0,"tags":["近捷運","新上架","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","有車位"],"tag_type":2,"tag_str":"1天前上架","pictures":["https://img1.591.com.tw/house/2026/04/18/177648677486642306.jpg!510x400.jpg","https://img2.591.com.tw/house/2026/04/18/177648677551276908.jpg!510x400.jpg","https://img1.591.com.tw/house/2026/04/18/177648677548449607.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21537886,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3262475,"type":1,"kind":1,"kind_str":"整層住家","title":"固豪👍愛河首排愛情河左岸精緻華麗3房平車","layout_info":["3房2廳3衛","78.59坪","5F/32F"],"deposit":"押金二個月","browse_num":0,"price":"69,000","is_host":0,"tags":["近捷運","新上架","有電梯","隨時可遷入","可開伙","有車位"],"tag_type":2,"tag_str":"1天前上架","pictures":["https://img1.591.com.tw/house/2025/08/05/175439432029463102.jpg!510x400.jpg","https://img1.591.com.tw/house/2025/08/05/175439434914697108.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":20850690,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3554143,"type":1,"kind":1,"kind_str":"整層住家","title":"🍊C11真愛碼頭愛情河左岸清新兩房","layout_info":["2房1廳1衛","21.53坪","26F/32F"],"deposit":"押金二個月","browse_num":0,"price":"25,000","is_host":0,"tags":["近捷運","新上架","有電梯","可開伙"],"tag_type":2,"tag_str":"1天前上架","pictures":["https://img2.591.com.tw/house/2026/03/13/177339277277040801.jpg!510x400.jpg","https://img2.591.com.tw/house/2026/03/13/177339277314944806.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21538126,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3262475,"type":1,"kind":1,"kind_str":"整層住家","title":"固豪👍愛河首排愛情河左岸高樓景觀3房平車","layout_info":["3房2廳2衛","42.15坪","21F/32F"],"deposit":"押金二個月","browse_num":0,"price":"38,000","is_host":0,"tags":["近捷運","新上架","拎包入住","有電梯","隨時可遷入","可開伙","有車位"],"tag_type":2,"tag_str":"1天前上架","pictures":["https://img2.591.com.tw/house/2026/01/06/176766652817231909.jpg!510x400.jpg","https://img2.591.com.tw/house/2026/01/05/176761913119283408.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21737698,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":5324346,"type":1,"kind":1,"kind_str":"整層住家","title":"愛情河左岸⭐裝潢精美兩房(租金不含管)","layout_info":["2房2廳1衛","12.145坪","19F/32F"],"deposit":"押金二個月","browse_num":0,"price":"21,000","is_host":0,"tags":["近捷運","新上架","近商圈","有電梯","可開伙"],"tag_type":2,"tag_str":"1天前上架","pictures":["https://img1.591.com.tw/house/2026/07/31/178546340281696506.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21734422,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4235350,"type":1,"kind":1,"kind_str":"整層住家","title":"可租補❗️景觀愛河畔❗️1+1房❗️高流特區❗️精美宅❗️","layout_info":["2房1廳1衛","13.6坪","28F/32F"],"deposit":"押金二個月","browse_num":0,"price":"25,000","is_host":0,"tags":["近捷運","新上架","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","南北通透","租金補貼"],"tag_type":2,"tag_str":"2天前上架","pictures":["https://img2.591.com.tw/house/2026/07/30/178540241787606508.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21174131,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":392946,"type":1,"kind":1,"kind_str":"整層住家","title":"🌹愛情河左岸|輕軌幸福居|高樓邊間景觀宅-權威","layout_info":["3房2廳2衛","42.88坪","24F/32F"],"deposit":"押金二個月","browse_num":0,"price":"39,000","is_host":0,"tags":["近捷運","新上架","拎包入住","有電梯","可開伙","有車位","南北通透","可報稅"],"tag_type":2,"tag_str":"2天前上架","pictures":["https://img2.591.com.tw/house/2025/08/26/175620366210108503.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21728469,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3051694,"type":1,"kind":1,"kind_str":"整層住家","title":"愛河超高樓兩房美景｜一卡皮箱即入住","layout_info":["2房1廳1衛","13坪","24F/24F"],"deposit":"押金二個月","browse_num":0,"price":"21,000","is_host":0,"tags":["近捷運","新上架","拎包入住","有電梯","隨時可遷入","可開伙","可養寵物"],"tag_type":2,"tag_str":"3天前上架","pictures":["https://img1.591.com.tw/house/2026/07/29/178531879097938508.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21725715,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4528498,"type":1,"kind":1,"kind_str":"整層住家","title":"可租補｜愛情河左岸高流港灣景觀美兩房","layout_info":["2房1廳1衛","14.44坪","30F/32F"],"deposit":"押金二個月","browse_num":0,"price":"25,000","is_host":0,"tags":["新上架","拎包入住","有電梯","隨時可遷入","可開伙","租金補貼"],"tag_type":2,"tag_str":"3天前上架","pictures":["https://img2.591.com.tw/house/2026/06/13/178131611467841902.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21724472,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4002993,"type":1,"kind":1,"kind_str":"整層住家","title":"愛河畔旁愛情河左岸2房車位傢俱電全","layout_info":["2房1廳1衛","12.14坪","22F/32F"],"deposit":"押金二個月","browse_num":0,"price":"27,000","is_host":0,"tags":["近捷運","新上架","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","有車位"],"tag_type":2,"tag_str":"3天前上架","pictures":["https://img1.591.com.tw/house/2026/06/04/178055729237951108.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21721827,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3250061,"type":1,"kind":1,"kind_str":"整層住家","title":"特瑞莎~租家庭或高管人士邊間景觀3房2衛3陽台附家具+管理費","layout_info":["3房2廳2衛","17.82坪","4F/32F"],"deposit":"押金二個月","browse_num":0,"price":"32,000","is_host":0,"tags":["近捷運","新上架","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","南北通透","租金補貼"],"tag_type":2,"tag_str":"4天前上架","pictures":["https://img1.591.com.tw/house/2025/05/31/174869289270633007.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21718402,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4582736,"type":1,"kind":1,"kind_str":"整層住家","title":"愛河第一排兩房全佳社宅🏠✅可租補✅免仲✅","layout_info":["2房1廳1衛","24坪","11F/32F"],"deposit":"押金二個月","browse_num":0,"price":"25,000","is_host":0,"tags":["近捷運","新上架","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","社會住宅","可報稅","可入籍"],"tag_type":2,"tag_str":"4天前上架","pictures":["https://img1.591.com.tw/house/2026/06/27/178252539829077209.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21718338,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4904349,"type":1,"kind":1,"kind_str":"整層住家","title":"愛河駁二流行音樂中心美麗島市議會捷運站愛河家樂福鼓山","layout_info":["2房1廳1衛","20坪","7F/32F"],"deposit":"押金二個月","browse_num":0,"price":"20,000","is_host":0,"tags":["近捷運","新上架","拎包入住","近商圈","有電梯","隨時可遷入","可開伙"],"tag_type":2,"tag_str":"4天前上架","pictures":["https://img2.591.com.tw/house/2026/07/28/178520621262502106.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21715089,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4591207,"type":1,"kind":1,"kind_str":"整層住家","title":"⚜️愛情河左岸•映灣景•市中心雙軌兩房•可租補-權威","layout_info":["2房2廳1衛","13.55坪","17F/32F"],"deposit":"押金二個月","browse_num":0,"price":"24,000","is_host":0,"tags":["近捷運","新上架","拎包入住","有電梯","隨時可遷入","可開伙","有車位","南北通透","可報稅"],"tag_type":2,"tag_str":"5天前上架","pictures":["https://img2.591.com.tw/house/2026/05/08/177825235721662207.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21707976,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4002993,"type":1,"kind":1,"kind_str":"整層住家","title":"愛河畔旁愛情河左岸2房車位傢俱電全","layout_info":["2房1廳1衛","12.14坪","22F/32F"],"deposit":"押金二個月","browse_num":0,"price":"27,000","is_host":0,"tags":["近捷運","新上架","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","有車位"],"tag_type":2,"tag_str":"6天前上架","pictures":["https://img2.591.com.tw/house/2026/06/04/178055729237951108.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21703220,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":958270,"type":1,"kind":1,"kind_str":"整層住家","title":"真愛碼頭小資宅2房","layout_info":["2房1廳1衛","12坪","27F/32F"],"deposit":"押金二個月","browse_num":0,"price":"22,000","is_host":0,"tags":["近捷運","拎包入住","近商圈","有電梯","隨時可遷入","可開伙"],"tag_type":2,"tag_str":"7天前上架","pictures":["https://img2.591.com.tw/house/2026/07/25/178496015500566709.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21698264,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4451783,"type":1,"kind":1,"kind_str":"整層住家","title":"(專租)愛情河左岸高樓全新1+1房","layout_info":["2房1廳1衛","21.35坪","28F/32F"],"deposit":"押金二個月","browse_num":0,"price":"25,000","is_host":0,"tags":["近捷運","有電梯","隨時可遷入","可開伙"],"tag_type":2,"tag_str":"8天前上架","pictures":["https://img1.591.com.tw/house/2026/07/24/178488015076486700.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21696939,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":392946,"type":1,"kind":1,"kind_str":"整層住家","title":"💖愛情河左岸愛河首排高樓層景觀宅平面車位-權威","layout_info":["2房1廳1衛","26.62坪","27F/32F"],"deposit":"押金二個月","browse_num":0,"price":"29,500","is_host":0,"tags":["近捷運","拎包入住","有電梯","可開伙","有車位","南北通透"],"tag_type":2,"tag_str":"8天前上架","pictures":["https://img1.591.com.tw/house/2026/07/24/178487042575844505.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21695776,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":1902877,"type":1,"kind":1,"kind_str":"整層住家","title":"🔥愛情河左岸🔥璀璨愛河海景房∥輕奢1+1房","layout_info":["2房1廳1衛","11.36坪","28F/32F"],"deposit":"押金二個月","browse_num":0,"price":"25,000","is_host":0,"tags":["近捷運","近商圈","有電梯","隨時可遷入","可開伙","南北通透","可報稅","可入籍"],"tag_type":2,"tag_str":"8天前上架","pictures":["https://img1.591.com.tw/house/2026/01/05/176760139621612504.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0}]}},
+            {"status":1,"msg":"ok","data":{"community_name":"愛情河左岸","community_id":101669,"total":58,"current_page":2,"last_page":3,"per_page":20,"list":[{"rent_id":21693372,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3262475,"type":1,"kind":1,"kind_str":"整層住家","title":"固豪👍愛河愛情河左岸明亮寬敞3房平車","layout_info":["3房1廳2衛","42.88坪","24F/32F"],"deposit":"押金二個月","browse_num":0,"price":"39,000","is_host":0,"tags":["近捷運","有電梯","可開伙","有車位"],"tag_type":2,"tag_str":"9天前上架","pictures":["https://img2.591.com.tw/house/2026/07/23/178480691131674507.jpg!510x400.jpg","https://img1.591.com.tw/house/2026/07/23/178480691207521804.jpg!510x400.jpg","https://img1.591.com.tw/house/2026/07/23/178480691181055201.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21692875,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3082543,"type":1,"kind":1,"kind_str":"整層住家","title":"💎【高雄女中&愛河首排美景】家具齊全超高樓兩房💎 ","layout_info":["2房1廳1衛","12.144坪","24F/24F"],"deposit":"押金二個月","browse_num":0,"price":"21,000","is_host":0,"tags":["近捷運","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","可養寵物"],"tag_type":2,"tag_str":"9天前上架","pictures":["https://img1.591.com.tw/house/2026/07/23/178480215301471905.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21691071,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":5336508,"type":1,"kind":1,"kind_str":"整層住家","title":"【安信租管】前金愛河-高樓層景觀三房平車-飯店級管理","layout_info":["3房2廳2衛","17.823坪","24F/32F"],"deposit":"押金二個月","browse_num":0,"price":"39,000","is_host":0,"tags":["近捷運","有電梯","隨時可遷入","可開伙","有車位"],"tag_type":2,"tag_str":"9天前上架","pictures":["https://img1.591.com.tw/house/2026/05/21/177932944165136406.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21690994,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":67068,"type":1,"kind":1,"kind_str":"整層住家","title":"側看南愛河與港灣之高樓層裝潢2房附平移車位","layout_info":["2房1廳1衛","23.679坪","17F/32F"],"deposit":"押金二個月","browse_num":0,"price":"25,000","is_host":0,"tags":["近捷運","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","有車位","南北通透","可報稅","可入籍"],"tag_type":2,"tag_str":"9天前上架","pictures":["https://img2.591.com.tw/house/2025/01/16/173701386383388705.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21690060,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":1080487,"type":1,"kind":1,"kind_str":"整層住家","title":"愛河超高樓兩房美景｜一卡皮箱即入住","layout_info":["2房1廳1衛","12.14坪","24F/32F"],"deposit":"押金二個月","browse_num":0,"price":"21,000","is_host":0,"tags":["近捷運","有電梯","隨時可遷入","可開伙"],"tag_type":2,"tag_str":"9天前上架","pictures":["https://img1.591.com.tw/house/2026/07/23/178478249213207009.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21689168,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3308603,"type":1,"kind":1,"kind_str":"整層住家","title":"🌟近前金捷運｜愛情河左岸｜高樓景觀正兩房🌟","layout_info":["2房1廳1衛","12.14坪","24F/24F"],"deposit":"押金二個月","browse_num":0,"price":"21,000","is_host":0,"tags":["近捷運","有電梯","隨時可遷入","可開伙","可養寵物"],"tag_type":2,"tag_str":"9天前上架","pictures":["https://img1.591.com.tw/house/2026/07/23/178477527333568801.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21682616,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4791295,"type":1,"kind":1,"kind_str":"整層住家","title":"租好房找林菲。超優愛河景觀戶兩房傢俱電全","layout_info":["2房2廳1衛","11.8坪","30F/32F"],"deposit":"押金二個月","browse_num":0,"price":"26,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙"],"tag_type":2,"tag_str":"10天前上架","pictures":["https://img1.591.com.tw/house/2026/07/22/178468814039642909.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21682593,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3554143,"type":1,"kind":1,"kind_str":"整層住家","title":"🍊C11真愛碼頭愛情河左岸高樓景觀三房平車","layout_info":["3房1廳2衛","17.82坪","24F/32F"],"deposit":"押金二個月","browse_num":0,"price":"33,000","is_host":0,"tags":["近捷運","拎包入住","近商圈","有電梯","可開伙","有車位"],"tag_type":2,"tag_str":"10天前上架","pictures":["https://img2.591.com.tw/house/2026/07/22/178468819026876002.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21682235,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":5336508,"type":1,"kind":1,"kind_str":"整層住家","title":"【安信租管】愛河景觀戶兩房傢俱電全","layout_info":["2房2廳1衛","14.44坪","30F/32F"],"deposit":"押金二個月","browse_num":0,"price":"26,000","is_host":0,"tags":["近捷運","有電梯","隨時可遷入","可開伙"],"tag_type":2,"tag_str":"10天前上架","pictures":["https://img2.591.com.tw/house/2026/07/22/178468596684966604.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21681748,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":1266587,"type":1,"kind":1,"kind_str":"整層住家","title":"愛河景觀二房+家具家電齊全+租金可談+可租補+免仲介費","layout_info":["2房1廳1衛","15.15坪","14F/32F"],"deposit":"押金二個月","browse_num":0,"price":"22,500","is_host":0,"tags":["近捷運","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","可養寵物","租金補貼","高齡友善","可報稅","可入籍"],"tag_type":2,"tag_str":"10天前上架","pictures":["https://img1.591.com.tw/house/2026/07/22/178467219176483300.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21508825,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4098846,"type":1,"kind":1,"kind_str":"整層住家","title":"百萬精緻裝潢-🉑補助-愛情河左岸","layout_info":["3房2廳2衛","42坪","25F/32F"],"deposit":"押金二個月","browse_num":0,"price":"35,500","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙","可養寵物","可報稅","可入籍"],"tag_type":2,"tag_str":"10天前上架","pictures":["https://img2.591.com.tw/house/2026/06/23/178222265718940603.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21678812,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3340557,"type":1,"kind":1,"kind_str":"整層住家","title":"⭐️可租補⭐️愛情河左岸高樓景觀典雅兩房","layout_info":["2房1廳1衛","11.8坪","30F/32F"],"deposit":"押金二個月","browse_num":0,"price":"25,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙"],"tag_type":2,"tag_str":"11天前上架","pictures":["https://img1.591.com.tw/house/2025/05/10/174685778457342103.jpg!510x400.jpg"],"has_agent":1,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21677507,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3064786,"type":1,"kind":1,"kind_str":"整層住家","title":"✨拎包入住【可租補可養寵物含管理費】亞灣區愛河旁精品裝潢兩房","layout_info":["2房1廳1衛","13.55坪","12F/32F"],"deposit":"押金二個月","browse_num":0,"price":"25,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙","可養寵物","租金補貼"],"tag_type":2,"tag_str":"11天前上架","pictures":["https://img1.591.com.tw/house/2025/02/04/173867764035557805.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21675463,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":67408,"type":1,"kind":1,"kind_str":"整層住家","title":"全新景觀3房+車位/雙捷運","layout_info":["3房2廳2衛","42.32坪","19F/32F"],"deposit":"押金二個月","browse_num":0,"price":"38,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙","有車位"],"tag_type":2,"tag_str":"11天前上架","pictures":["https://img2.591.com.tw/house/2026/06/10/178108911938287702.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21672610,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4053642,"type":1,"kind":1,"kind_str":"整層住家","title":"🍎社會住宅🍎水岸生活精品高樓兩房","layout_info":["2房2廳1衛","21.6坪","21F/32F"],"deposit":"押金二個月","browse_num":0,"price":"22,000","is_host":0,"tags":["近捷運","有電梯","隨時可遷入","可開伙","社會住宅"],"tag_type":2,"tag_str":"12天前上架","pictures":["https://img2.591.com.tw/house/2026/04/14/177614988975714105.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21667848,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":569200,"type":1,"kind":1,"kind_str":"整層住家","title":"【免仲介服務費】含管理費/可寵物/愛情河左岸-五泰小菁","layout_info":["2房2廳1衛","13.92坪","26F/32F"],"deposit":"押金二個月","browse_num":0,"price":"22,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙","可養寵物","社會住宅","可報稅","可入籍"],"tag_type":2,"tag_str":"12天前上架","pictures":["https://img1.591.com.tw/house/2026/07/29/178532760848048500.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21041959,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3641023,"type":1,"kind":1,"kind_str":"整層住家","title":"愛河首排高樓層景觀二房","layout_info":["2房1廳1衛","22.9坪","26F/32F"],"deposit":"押金二個月","browse_num":0,"price":"23,000","is_host":0,"tags":["近捷運","拎包入住","近商圈","有電梯","隨時可遷入","可開伙"],"tag_type":2,"tag_str":"14天前上架","pictures":["https://img2.591.com.tw/house/2025/08/26/175617648326157904.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21656428,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3257753,"type":1,"kind":1,"kind_str":"整層住家","title":"安信⭐前金愛河⭐高樓層景觀三房平車⭐飯店級管理","layout_info":["3房2廳2衛","24.39坪","24F/32F"],"deposit":"押金二個月","browse_num":0,"price":"39,000","is_host":0,"tags":["近捷運","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","有車位"],"tag_type":2,"tag_str":"15天前上架","pictures":["https://img2.591.com.tw/house/2026/05/20/177925858843529402.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21644863,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3250061,"type":1,"kind":1,"kind_str":"整層住家","title":"特瑞莎可租補v愛河鋼骨結構低樓層不怕地震舒適2房","layout_info":["2房2廳1衛","11.84坪","4F/32F"],"deposit":"押金二個月","browse_num":0,"price":"22,000","is_host":0,"tags":["近捷運","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","租金補貼","可報稅"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/06/14/178143563267742402.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21467801,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3262475,"type":1,"kind":1,"kind_str":"整層住家","title":"固豪👍愛河愛情河左岸高樓2房含車位","layout_info":["2房1廳1衛","24.05坪","22F/32F"],"deposit":"押金二個月","browse_num":0,"price":"27,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","可開伙","有車位"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/06/16/178160687678624808.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0}]}},
+            {"status":1,"msg":"ok","data":{"community_name":"愛情河左岸","community_id":101669,"total":58,"current_page":3,"last_page":3,"per_page":20,"list":[{"rent_id":20408426,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3262475,"type":1,"kind":1,"kind_str":"整層住家","title":"固豪👍愛河旁愛情河左岸時尚2房","layout_info":["2房1廳1衛","13.54坪","25F/32F"],"deposit":"押金二個月","browse_num":0,"price":"27,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙"],"tag_type":0,"tag_str":"","pictures":["https://img1.591.com.tw/house/2025/12/09/176524477884852901.jpg!510x400.jpg","https://img2.591.com.tw/house/2025/12/09/176524480716243805.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21644084,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3958637,"type":1,"kind":1,"kind_str":"整層住家","title":"🌹💐🌊面海音館祕密花園｜愛情河左岸海景2房車位","layout_info":["2房1廳1衛","25.058坪","25F/32F"],"deposit":"押金二個月","browse_num":0,"price":"27,000","is_host":0,"tags":["近捷運","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","有車位","租金補貼"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/05/20/177927638684273100.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21641780,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4136455,"type":1,"kind":1,"kind_str":"整層住家","title":"🌊愛河首排｜可租補高樓景觀兩房｜家具家電全配🏙️","layout_info":["2房1廳1衛","24.047坪","22F/32F"],"deposit":"押金二個月","browse_num":0,"price":"27,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙","可養寵物","有車位"],"tag_type":0,"tag_str":"","pictures":["https://img1.591.com.tw/house/2026/07/15/178409349605645909.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21626130,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3250061,"type":1,"kind":1,"kind_str":"整層住家","title":"特瑞莎可租補高樓層2房雙陽台遠眺愛河海音館","layout_info":["2房2廳1衛","11.8坪","26F/32F"],"deposit":"押金二個月","browse_num":0,"price":"22,000","is_host":0,"tags":[],"tag_type":0,"tag_str":"","pictures":["https://img1.591.com.tw/house/2026/06/13/178131756269699903.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21624917,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":1225912,"type":1,"kind":1,"kind_str":"整層住家","title":"面愛河景觀宅★愛情河左岸★首排無敵海景2房車位","layout_info":["開放式格局","11.703坪","27F/32F"],"deposit":"押金二個月","browse_num":0,"price":"19,800","is_host":0,"tags":["近捷運","有電梯","隨時可遷入","可開伙","有車位","南北通透"],"tag_type":0,"tag_str":"","pictures":["https://img1.591.com.tw/house/2026/03/10/177311584775784004.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21614560,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":1214061,"type":1,"kind":1,"kind_str":"整層住家","title":"漫步愛情河左岸","layout_info":["2房1廳1衛","12.47坪","16F/32F"],"deposit":"押金二個月","browse_num":0,"price":"22,000","is_host":1,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙","租金補貼"],"tag_type":0,"tag_str":"","pictures":[],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21613482,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4627965,"type":1,"kind":1,"kind_str":"整層住家","title":"🌊愛河首排奢華海景！百萬裝潢頂級公設飯店宅✨","layout_info":["2房1廳1衛","11.39坪","27F/32F"],"deposit":"押金二個月","browse_num":0,"price":"30,000","is_host":0,"tags":["拎包入住","近商圈","有電梯","隨時可遷入","可開伙","租金補貼"],"tag_type":0,"tag_str":"","pictures":["https://img1.591.com.tw/house/2026/06/04/178054651742275302.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21602219,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":1383625,"type":1,"kind":1,"kind_str":"整層住家","title":"【安信】愛河高樓層🌹飯店式管理景觀三房平車🉑租補","layout_info":["3房2廳2衛","17.823坪","24F/32F"],"deposit":"押金二個月","browse_num":0,"price":"39,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙","可養寵物","有車位","租金補貼","可報稅","可入籍"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/05/08/177823377152440000.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21601650,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":2093507,"type":1,"kind":1,"kind_str":"整層住家","title":"🏠寄居蟹社會住宅｜免仲可租補｜愛河第一排景觀水岸宅","layout_info":["2房1廳1衛","13.82坪","16F/32F"],"deposit":"押金二個月","browse_num":0,"price":"21,000","is_host":0,"tags":["近捷運","拎包入住","近商圈","有電梯","隨時可遷入","可開伙","社會住宅","租金補貼","可報稅","可入籍"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/07/10/178361868453478408.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21590150,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":3262475,"type":1,"kind":1,"kind_str":"整層住家","title":"固豪👍愛河旁愛情河左岸時尚無印風2房","layout_info":["2房1廳1衛","20.79坪","12F/32F"],"deposit":"押金二個月","browse_num":0,"price":"25,000","is_host":0,"tags":["拎包入住","有電梯","隨時可遷入","可開伙"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/05/06/177806246085495204.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21587556,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4597407,"type":1,"kind":1,"kind_str":"整層住家","title":"緗緗*可租補高樓層2房雙陽台遠眺愛河海音館","layout_info":["2房2廳1衛","11.8坪","26F/32F"],"deposit":"押金二個月","browse_num":0,"price":"22,000","is_host":0,"tags":["有電梯","隨時可遷入","可開伙","可報稅"],"tag_type":0,"tag_str":"","pictures":["https://img1.591.com.tw/house/2026/07/06/178332201758087709.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21587415,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4597407,"type":1,"kind":1,"kind_str":"整層住家","title":"租房找緗緗*愛河畔2年輕屋齡裝潢舒適3房附家具","layout_info":["3房2廳2衛","18坪","4F/32F"],"deposit":"押金二個月","browse_num":0,"price":"32,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/07/14/178403385795925005.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21587252,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":1210523,"type":1,"kind":1,"kind_str":"整層住家","title":"⭐亞灣｜遊艇等級百萬裝潢兩房【高樓層看愛河美景】","layout_info":["2房1廳1衛","11.395坪","27F/32F"],"deposit":"押金二個月","browse_num":0,"price":"30,000","is_host":0,"tags":["拎包入住","有電梯","隨時可遷入","可開伙","租金補貼"],"tag_type":0,"tag_str":"","pictures":["https://img1.591.com.tw/house/2026/06/01/178031873735888606.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21577850,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4098846,"type":1,"kind":1,"kind_str":"整層住家","title":"浪漫社區-可補助、可寵物-愛情河左岸","layout_info":["2房2廳1衛","14坪","31F/32F"],"deposit":"押金二個月","browse_num":0,"price":"21,000","is_host":0,"tags":["有電梯","隨時可遷入","可開伙","可養寵物","租金補貼"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/06/27/178257138293255301.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21392391,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4571025,"type":1,"kind":1,"kind_str":"整層住家","title":"愛情河左岸|兩房一廳一衛|收納空間佳|可租補","layout_info":["2房1廳1衛","13.91坪","5F/32F"],"deposit":"押金二個月","browse_num":0,"price":"23,500","is_host":0,"tags":["拎包入住","有電梯","隨時可遷入","可開伙","租金補貼","可入籍"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/04/30/177753957569168203.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21564431,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":392946,"type":1,"kind":1,"kind_str":"整層住家","title":"🐳前金|愛情河左岸•映灣景•雙軌兩房•可租補-權威","layout_info":["2房2廳1衛","22.9坪","17F/32F"],"deposit":"押金二個月","browse_num":0,"price":"24,000","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙","有車位","南北通透","租金補貼"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/05/08/177822903338004802.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":21508532,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":1400008,"type":1,"kind":1,"kind_str":"整層住家","title":"🉑可申請租屋補助【愛情河左岸高樓海景2房】","layout_info":["2房1廳1衛","14坪","28F/32F"],"deposit":"押金二個月","browse_num":0,"price":"22,500","is_host":0,"tags":["近捷運","拎包入住","有電梯","隨時可遷入","可開伙","南北通透","社會住宅"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/06/23/178221896403867005.jpg!510x400.jpg"],"has_agent":0,"has_video":1,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0},{"rent_id":20736880,"community_id":"","community_name":"","distance":null,"info":"距離本社區約 公尺","user_id":4006160,"type":1,"kind":1,"kind_str":"整層住家","title":"可租補免服務費，大空間1房河景房附全套傢俱","layout_info":["2房2廳1衛","14坪","23F/32F"],"deposit":"押金二個月","browse_num":0,"price":"22,500","is_host":0,"tags":["拎包入住","隨時可遷入","社會住宅","可報稅","可入籍"],"tag_type":0,"tag_str":"","pictures":["https://img2.591.com.tw/house/2026/07/11/178374774850189305.jpg!510x400.jpg"],"has_agent":0,"has_video":0,"label_type":1,"bid_rank":99,"agent":[],"is_visit":0}]}}
+        ];
+
+        function loadHardcodedData() {
+            processDataArray(hardcodedPayloads);
+        }
+
+        function loadData() {
+            const input = document.getElementById('jsonInput').value;
+            const grid = document.getElementById('propertyGrid');
+            
+            if (!input.trim()) {
+                grid.innerHTML = '<div class="error">Please paste some JSON data first.</div>';
+                return;
+            }
+
+            try {
+                let fixedInput = input.trim();
+                fixedInput = fixedInput.replace(/\]\s*\[/g, ','); 
+                fixedInput = fixedInput.replace(/\}\s*\{/g, '},{'); 
+                if (!fixedInput.startsWith('[')) fixedInput = '[' + fixedInput + ']';
+                
+                const parsedArray = JSON.parse(fixedInput);
+                processDataArray(parsedArray);
+
+            } catch (error) {
+                console.error("JSON Parsing Error:", error);
+                grid.innerHTML = '<div class="error">Error parsing JSON data. Please make sure the copied text is valid. Check the console for details.</div>';
+            }
+        }
+
+        function processDataArray(parsedArray) {
+            let tempData = [];
+            
+            parsedArray.forEach(item => {
+                if (item.data && item.data.list) {
+                    tempData = tempData.concat(item.data.list);
+                } else if (item.list) {
+                    tempData = tempData.concat(item.list);
+                } else if (Array.isArray(item)) {
+                    tempData = tempData.concat(item);
+                } else {
+                    tempData.push(item);
+                }
+            });
+
+            // Deduplicate
+            const uniqueProps = new Map();
+            tempData.forEach(item => {
+                if (item.rent_id) {
+                    uniqueProps.set(item.rent_id, item);
+                }
+            });
+            
+            allProperties = Array.from(uniqueProps.values());
+            
+            document.getElementById('propertyGrid').innerHTML = '';
+            renderCards();
+        }
+
+        // --- CAROUSEL LOGIC ---
+        function changeImage(event, rentId, direction) {
+            event.preventDefault(); 
+            event.stopPropagation();
+
+            const container = document.getElementById(`carousel-${rentId}`);
+            if (!container) return;
+
+            const images = container.querySelectorAll('.carousel-img');
+            if (images.length <= 1) return;
+
+            let currentIndex = 0;
+            for (let i = 0; i < images.length; i++) {
+                if (images[i].classList.contains('active')) {
+                    currentIndex = i;
+                    images[i].classList.remove('active');
+                    break;
+                }
+            }
+
+            let newIndex = currentIndex + direction;
+            if (newIndex < 0) newIndex = images.length - 1;
+            if (newIndex >= images.length) newIndex = 0;
+
+            images[newIndex].classList.add('active');
+            
+            const indicator = container.querySelector('.carousel-indicator');
+            if (indicator) {
+                indicator.innerText = `${newIndex + 1} / ${images.length}`;
+            }
+        }
+
+        // --- RENDER LOGIC ---
+        function renderCards() {
+            const grid = document.getElementById('propertyGrid');
+            const stats = document.getElementById('statsDisplay');
+
+            if (allProperties.length === 0) {
+                stats.innerText = "Loaded 0 properties.";
+                grid.innerHTML = '';
+                return;
+            }
+
+            // Get Filter Values
+            const minFloorVal = parseInt(document.getElementById('minFloor').value, 10);
+            const maxFloorVal = parseInt(document.getElementById('maxFloor').value, 10);
+            const maxPriceVal = parseInt(document.getElementById('maxPrice').value, 10);
+
+            // Filter
+            let filteredProps = allProperties.filter(item => {
+                const floor = getFloor(item);
+                const price = getPrice(item);
+
+                if (!isNaN(minFloorVal) && floor < minFloorVal) return false;
+                if (!isNaN(maxFloorVal) && floor > maxFloorVal) return false;
+                if (!isNaN(maxPriceVal) && price > maxPriceVal) return false;
+
+                return true;
+            });
+
+            // Sort
+            const sortMode = document.getElementById('sortSelect').value;
+            filteredProps.sort((a, b) => {
+                if (sortMode === 'priceAsc') return getPrice(a) - getPrice(b);
+                if (sortMode === 'priceDesc') return getPrice(b) - getPrice(a);
+                if (sortMode === 'floorAsc') return getFloor(a) - getFloor(b);
+                if (sortMode === 'floorDesc') return getFloor(b) - getFloor(a);
+                return 0; // default
+            });
+
+            // Update stats
+            const translatedStats = currentLang === 'en' ? 
+                `Showing ${filteredProps.length} of ${allProperties.length} loaded properties.` : 
+                `顯示 ${filteredProps.length} / ${allProperties.length} 筆房屋。`;
+            stats.innerText = translatedStats;
+
+            // Render
+            grid.innerHTML = ''; 
+            filteredProps.forEach(item => {
+                const card = document.createElement('a');
+                card.className = 'card';
+                card.href = `https://rent.591.com.tw/home/${item.rent_id}`; 
+                card.target = "_blank"; 
+                
+                const floorNum = getFloor(item);
+                const isIdealFloor = (floorNum >= 8 && floorNum <= 16);
+
+                const layoutPills = (item.layout_info || []).map(info => {
+                    const isFloor = info.includes('F/');
+                    const highlightClass = (isFloor && isIdealFloor) ? 'highlight-floor' : '';
+                    return `<span class="pill ${highlightClass}">${translateText(info)}</span>`;
+                }).join('');
+                
+                const tags = (item.tags || []).map(tag => `<span class="tag">${translateText(tag)}</span>`).join('');
+                
+                const communityName = item.community_name ? translateText(item.community_name) : (currentLang === 'en' ? 'Unknown Community' : '未知社區');
+                const distanceInfo = item.distance ? (currentLang === 'en' ? ` (Approx ${item.distance}m)` : ` (約 ${item.distance}公尺)`) : '';
+
+                // Build Carousel HTML
+                let carouselHTML = `<div class="carousel-container" id="carousel-${item.rent_id}">`;
+                
+                if (item.pictures && item.pictures.length > 0) {
+                    item.pictures.forEach((picUrl, index) => {
+                        const activeClass = index === 0 ? 'active' : '';
+                        carouselHTML += `<img src="${picUrl}" class="carousel-img ${activeClass}" loading="lazy">`;
+                    });
+                    
+                    if (item.pictures.length > 1) {
+                        carouselHTML += `
+                            <button class="carousel-btn carousel-prev" onclick="changeImage(event, ${item.rent_id}, -1)">❮</button>
+                            <button class="carousel-btn carousel-next" onclick="changeImage(event, ${item.rent_id}, 1)">❯</button>
+                            <div class="carousel-indicator">1 / ${item.pictures.length}</div>
+                        `;
+                    }
+                } else {
+                    const noImageText = currentLang === 'en' ? 'No Image' : '無圖片';
+                    carouselHTML += `<img src="https://via.placeholder.com/400x220?text=${noImageText}" class="carousel-img active">`;
+                }
+                carouselHTML += `</div>`;
+
+                const displayPrice = item.price + (currentLang === 'en' ? ' NTD/Month' : ' 元/月');
+
+                card.innerHTML = `
+                    ${carouselHTML}
+                    <div class="card-content">
+                        <div class="price">${displayPrice}</div>
+                        <div class="title" title="${item.title}">${translateText(item.title)}</div>
+                        <div class="info-row">
+                            <span class="pill highlight-community">${communityName}${distanceInfo}</span>
+                            ${layoutPills}
+                        </div>
+                        <div class="tags">
+                            ${tags}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            if (filteredProps.length === 0) {
+                const emptyText = currentLang === 'en' ? 'No properties match your current filters.' : '沒有符合條件的房屋。';
+                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">${emptyText}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
