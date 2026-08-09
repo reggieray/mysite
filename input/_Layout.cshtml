@@ -22,6 +22,10 @@
 		<link rel="stylesheet" href="/assets/css/theme-switcher.css" />
 
 		<meta name="theme-color" content="#5d2b90" />
+		@if(Document.GetBool("NoIndex", false))
+		{
+			<meta name="robots" content="noindex, nofollow" />
+		}
 
 		<!-- SEO & Social Media Card Previews -->
 		<link rel="canonical" href="@(Document.GetLink(true))" />

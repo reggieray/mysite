@@ -107,7 +107,7 @@ Below is an interactive, theme-adaptive timeline detailing the acceleration of m
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    var timeline_json = {
+    window.timelineData = {
       "title": {
         "text": {
           "headline": "A Timeline of AI Milestones",
@@ -441,7 +441,7 @@ Below is an interactive, theme-adaptive timeline detailing the acceleration of m
       ]
     };
     
-    window.timeline = new TL.Timeline('timeline-embed', timeline_json, {
+    window.timeline = new TL.Timeline('timeline-embed', JSON.parse(JSON.stringify(window.timelineData)), {
       font: 'default',
       is_embed: true
     });
@@ -586,6 +586,1241 @@ The current era has transitioned from static text generation to native multimoda
 *   **Claude 3.7 Sonnet & Claude Code (February 2025):** Anthropic introduced Claude 3.7 Sonnet, the first hybrid reasoning model, alongside Claude Code, an autonomous CLI agent operating directly in code repositories.
 *   **GPT-5 & The Scaling Plateau (August 2025):** OpenAI released GPT-5, highlighting a pre-training scaling plateau where increasing parameters yielded diminishing returns, confirming the shift toward inference-time compute.
 *   **Recent 2026 Innovations:** 2026 has seen the release of next-generation models like **Anthropic Claude Opus 4.8 / Sonnet 5**, **OpenAI GPT-5.5**, and **Google Gemini 3.1 Pro**, representing highly specialized, agentic, and low-latency workflows operating across professional developer environments.
+
+---
+
+## 🚶‍♂️ The AI Milestone Walker
+
+To help you walk through the timeline and inspect individual markers clearly, use the interactive Walker tool below. You can search for specific breakthroughs, filter by categories, or run the auto-play slideshow.
+
+<div id="milestone-walker" class="mw-container">
+  <!-- Top bar with search and filters -->
+  <div class="mw-header">
+    <div class="mw-header-left">
+      <h3 class="mw-title">Milestone Explorer</h3>
+      <p class="mw-subtitle">Walk through key moments in artificial intelligence history step-by-step</p>
+    </div>
+    <div class="mw-header-right">
+      <div class="mw-search-wrapper">
+        <span class="mw-search-icon">🔍</span>
+        <input type="text" id="mw-search" placeholder="Search milestones..." aria-label="Search milestones">
+      </div>
+      <div class="mw-autoplay-controls">
+        <button id="mw-btn-play" class="mw-btn mw-btn-icon" title="Auto-play Slideshow">
+          <span class="mw-play-icon">▶</span>
+          <span class="mw-pause-icon" style="display:none;">⏸</span>
+        </button>
+        <select id="mw-autoplay-speed" class="mw-select" title="Autoplay interval" aria-label="Autoplay interval">
+          <option value="3000">3s</option>
+          <option value="5000" selected>5s</option>
+          <option value="8000">8s</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Pills -->
+  <div class="mw-filters-container">
+    <span class="mw-filter-label">Filter:</span>
+    <div class="mw-filter-pills" id="mw-filter-pills">
+      <button class="mw-pill active" data-category="all">All Milestones</button>
+      <button class="mw-pill" data-category="pioneering">Classic AI (Pre-2018)</button>
+      <button class="mw-pill" data-category="deepmind">Google & DeepMind</button>
+      <button class="mw-pill" data-category="openai">OpenAI & GPT</button>
+      <button class="mw-pill" data-category="opensource">Open Weights & Others</button>
+    </div>
+  </div>
+
+  <!-- Markers Track wrapper -->
+  <div class="mw-track-wrapper">
+    <button class="mw-track-scroll-btn mw-left" id="mw-scroll-left" title="Scroll Left">◀</button>
+    <div class="mw-track-scroll-area" id="mw-track-scroll-area">
+      <div class="mw-track-content" id="mw-track-content">
+        <div class="mw-track-line-bg" id="mw-track-line-bg"></div>
+        <div class="mw-track-line-progress" id="mw-track-line-progress"></div>
+        <div class="mw-markers-row" id="mw-markers-row">
+          <!-- Marker nodes will be dynamically generated here -->
+        </div>
+      </div>
+    </div>
+    <button class="mw-track-scroll-btn mw-right" id="mw-scroll-right" title="Scroll Right">▶</button>
+  </div>
+
+  <!-- Main Card Display -->
+  <div class="mw-card" id="mw-card">
+    <div class="mw-card-content">
+      <div class="mw-card-info">
+        <div class="mw-card-meta">
+          <span class="mw-badge mw-badge-date" id="mw-card-date">1956</span>
+          <span class="mw-badge mw-badge-category" id="mw-card-category">Pioneering</span>
+        </div>
+        <h4 class="mw-card-title" id="mw-card-title">Coining 'Artificial Intelligence'</h4>
+        <div class="mw-card-description" id="mw-card-desc">
+          <!-- Text content -->
+        </div>
+      </div>
+      <div class="mw-card-visual">
+        <div class="mw-media-container" id="mw-media-container">
+          <!-- Image or Iframe goes here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer controls -->
+  <div class="mw-footer">
+    <div class="mw-progress-info">
+      <span id="mw-current-index">1</span> of <span id="mw-total-count">29</span> milestones
+    </div>
+    <div class="mw-nav-buttons">
+      <button id="mw-btn-prev" class="mw-btn mw-btn-secondary" disabled>◀ Previous</button>
+      <button id="mw-btn-next" class="mw-btn mw-btn-primary">Next ▶</button>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Milestone Walker styles */
+.mw-container {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 3rem 0;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+body.light-theme .mw-container {
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+  color: #334155;
+}
+
+.mw-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1.5rem;
+}
+
+body.light-theme .mw-header {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.mw-header-left h3.mw-title {
+  margin: 0 0 0.25rem 0 !important;
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  background: linear-gradient(135deg, #c084fc, #6366f1);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  border: none !important;
+}
+
+.mw-subtitle {
+  margin: 0 !important;
+  font-size: 0.95rem;
+  color: #94a3b8;
+}
+
+body.light-theme .mw-subtitle {
+  color: #64748b;
+}
+
+.mw-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.mw-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.mw-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  color: #64748b;
+  pointer-events: none;
+}
+
+#mw-search {
+  padding: 0.5rem 1rem 0.5rem 2.2rem !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 9999px !important;
+  color: #f8fafc !important;
+  font-size: 0.9rem !important;
+  width: 220px !important;
+  transition: all 0.2s ease !important;
+  height: auto !important;
+}
+
+body.light-theme #mw-search {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+#mw-search:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+  width: 260px !important;
+}
+
+.mw-autoplay-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.mw-btn-icon {
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.1);
+  color: #a5b4fc;
+}
+
+.mw-btn-icon:hover {
+  background: #6366f1;
+  color: white;
+}
+
+.mw-select {
+  padding: 0.35rem 1.8rem 0.35rem 0.75rem !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  color: #e2e8f0 !important;
+  font-size: 0.85rem !important;
+  cursor: pointer !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+body.light-theme .mw-select {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+.mw-filters-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.mw-filter-label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mw-filter-pills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.mw-pill {
+  padding: 0.35rem 0.85rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+  transition: all 0.2s ease !important;
+  display: inline-block !important;
+}
+
+body.light-theme .mw-pill {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #64748b !important;
+}
+
+.mw-pill:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f8fafc !important;
+}
+
+body.light-theme .mw-pill:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+.mw-pill.active {
+  background: linear-gradient(135deg, #6366f1, #a855f7) !important;
+  border-color: transparent !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+}
+
+/* Markers Track styles */
+.mw-track-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  background: rgba(15, 23, 42, 0.3);
+  padding: 1rem 0.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+body.light-theme .mw-track-wrapper {
+  background: rgba(241, 245, 249, 0.5);
+  border-color: rgba(0, 0, 0, 0.04);
+}
+
+.mw-track-scroll-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 1rem;
+  transition: color 0.2s;
+  z-index: 5;
+}
+
+.mw-track-scroll-btn:hover {
+  color: #6366f1;
+}
+
+.mw-track-scroll-area {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
+  padding: 0 1rem 12px 1rem;
+  scrollbar-width: none;
+  height: 80px; /* Fixed height for scroll area container */
+  display: flex;
+  align-items: flex-end; /* Rest the content wrapper at the bottom */
+  box-sizing: border-box;
+}
+
+.mw-track-scroll-area::-webkit-scrollbar {
+  display: none;
+}
+
+.mw-track-content {
+  position: relative;
+  width: max-content;
+  height: 56px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.mw-track-line-bg {
+  position: absolute;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  bottom: 4px; /* Align precisely with the center of the dots (6px center) */
+  z-index: 1;
+  pointer-events: none; /* Ignore pointer events so dots can be clicked */
+}
+
+body.light-theme .mw-track-line-bg {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.mw-track-line-progress {
+  position: absolute;
+  height: 4px;
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  border-radius: 2px;
+  bottom: 4px; /* Align precisely with the center of the active dot */
+  z-index: 2;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none; /* Ignore pointer events so dots can be clicked */
+}
+
+.mw-markers-row {
+  display: flex;
+  gap: 3.5rem;
+  position: relative;
+  z-index: 3;
+  width: max-content;
+  padding: 0 2rem;
+  height: 56px; /* Row height matching text + dot height */
+  align-items: flex-end; /* resting dots at the bottom */
+}
+
+.mw-marker-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  height: 56px;
+  justify-content: flex-end;
+}
+
+.mw-marker-year {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #64748b;
+  margin-bottom: 8px; /* Safe padding between year text and dot */
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  display: block;
+}
+
+.mw-marker-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #334155;
+  border: 2px solid #0f172a;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}
+
+body.light-theme .mw-marker-dot {
+  background: #cbd5e1;
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+}
+
+.mw-marker-node:hover .mw-marker-dot {
+  background: #6366f1;
+  transform: scale(1.3);
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.8);
+}
+
+.mw-marker-node:hover .mw-marker-year {
+  color: #e2e8f0;
+}
+
+body.light-theme .mw-marker-node:hover .mw-marker-year {
+  color: #0f172a;
+}
+
+.mw-marker-node.active .mw-marker-dot {
+  background: #ffffff;
+  border-color: #6366f1;
+  transform: scale(1.5);
+  box-shadow: 0 0 12px 3px rgba(99, 102, 241, 0.6);
+  width: 14px;
+  height: 14px;
+}
+
+body.light-theme .mw-marker-node.active .mw-marker-dot {
+  background: #ffffff;
+  border-color: #4f46e5;
+  box-shadow: 0 0 12px 3px rgba(79, 70, 229, 0.4);
+}
+
+.mw-marker-node.active .mw-marker-year {
+  color: #a5b4fc;
+  font-size: 0.85rem;
+}
+
+body.light-theme .mw-marker-node.active .mw-marker-year {
+  color: #4f46e5;
+}
+
+/* Card details styling */
+.mw-card {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  height: 410px; /* Fixed height on desktop to prevent layout shifting */
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+body.light-theme .mw-card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.02), 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.mw-card-content {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .mw-card-content {
+    grid-template-columns: 1fr;
+  }
+  .mw-card {
+    height: auto;
+    min-height: 520px; /* Standardize mobile min-height to reduce jumps */
+  }
+}
+
+.mw-card-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Align to top */
+  height: 100%;
+  overflow: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.mw-card-meta {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.mw-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mw-badge-date {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+body.light-theme .mw-badge-date {
+  background: rgba(0, 0, 0, 0.08);
+  color: #0f172a;
+}
+
+.mw-badge-category {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+}
+
+body.light-theme .mw-badge-category {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+}
+
+.mw-card-title {
+  font-size: 1.6rem !important;
+  font-weight: 800 !important;
+  margin: 0 0 1rem 0 !important;
+  line-height: 1.25 !important;
+  color: #ffffff !important;
+  border-bottom: none !important;
+  transition: color 0.3s ease;
+}
+
+body.light-theme .mw-card-title {
+  color: #0f172a !important;
+}
+
+.mw-card-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  overflow-y: auto; /* Scroll if description overflows */
+  padding-right: 0.5rem;
+  flex: 1;
+}
+
+/* Custom premium scrollbar for description */
+.mw-card-description::-webkit-scrollbar {
+  width: 4px;
+}
+.mw-card-description::-webkit-scrollbar-track {
+  background: transparent;
+}
+.mw-card-description::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 2px;
+}
+.mw-card-description::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.6);
+}
+
+body.light-theme .mw-card-description {
+  color: #475569;
+}
+
+.mw-card-description a {
+  color: #a5b4fc;
+  font-weight: bold;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+body.light-theme .mw-card-description a {
+  color: #4f46e5;
+}
+
+.mw-card-description a:hover {
+  color: #c084fc;
+}
+
+body.light-theme .mw-card-description a:hover {
+  color: #6366f1;
+}
+
+.mw-card-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0b0f19;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  height: 100%;
+}
+
+body.light-theme .mw-card-visual {
+  background: #f1f5f9;
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+.mw-media-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.mw-img {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.mw-img:hover {
+  transform: scale(1.05);
+}
+
+.mw-iframe {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  border: none;
+}
+
+/* Custom Location Card for Google Maps */
+.mw-maps-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  background: radial-gradient(circle at center, #1e1e38 0%, #0b0f19 100%);
+  width: 100%;
+  height: 100%;
+  color: #f8fafc;
+}
+
+body.light-theme .mw-maps-card {
+  background: radial-gradient(circle at center, #ffffff 0%, #e2e8f0 100%);
+  color: #0f172a;
+}
+
+.mw-maps-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.6));
+}
+
+.mw-maps-caption {
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  color: #94a3b8;
+  max-width: 80%;
+}
+
+body.light-theme .mw-maps-caption {
+  color: #64748b;
+}
+
+.mw-maps-btn {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  transition: all 0.2s;
+  text-decoration: none !important;
+}
+
+.mw-maps-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(99, 102, 241, 0.4);
+}
+
+/* Footer Control styles */
+.mw-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.5rem;
+}
+
+body.light-theme .mw-footer {
+  border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+.mw-progress-info {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+body.light-theme .mw-progress-info {
+  color: #64748b;
+}
+
+.mw-nav-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mw-btn-primary {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: white;
+  box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+}
+
+.mw-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3);
+}
+
+.mw-btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+body.light-theme .mw-btn-secondary {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.mw-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+body.light-theme .mw-btn-secondary:hover:not(:disabled) {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.mw-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.mw-empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #64748b;
+  width: 100%;
+}
+
+.mw-empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Wait for window.timelineData to be loaded
+    const checkTimelineData = setInterval(() => {
+      if (window.timelineData && window.timelineData.events) {
+        clearInterval(checkTimelineData);
+        initMilestoneWalker();
+      }
+    }, 100);
+
+    function initMilestoneWalker() {
+      const events = JSON.parse(JSON.stringify(window.timelineData.events));
+      
+      // Parse categories and store original indices
+      events.forEach((event, index) => {
+        event.originalIndex = index;
+        const cat = getEventCategory(event, index);
+        event.category = cat.id;
+        event.categoryName = cat.name;
+      });
+      
+      let filteredEvents = [...events];
+      let currentIndex = 0;
+      let autoplayInterval = null;
+      
+      const markersRow = document.getElementById("mw-markers-row");
+      const progressLine = document.getElementById("mw-track-line-progress");
+      const trackScrollArea = document.getElementById("mw-track-scroll-area");
+      const cardTitle = document.getElementById("mw-card-title");
+      const cardDesc = document.getElementById("mw-card-desc");
+      const cardDate = document.getElementById("mw-card-date");
+      const cardCategory = document.getElementById("mw-card-category");
+      const mediaContainer = document.getElementById("mw-media-container");
+      const currentIndexEl = document.getElementById("mw-current-index");
+      const totalCountEl = document.getElementById("mw-total-count");
+      const btnPrev = document.getElementById("mw-btn-prev");
+      const btnNext = document.getElementById("mw-btn-next");
+      const btnPlay = document.getElementById("mw-btn-play");
+      const playIcon = btnPlay.querySelector(".mw-play-icon");
+      const pauseIcon = btnPlay.querySelector(".mw-pause-icon");
+      const autoplaySpeedSelect = document.getElementById("mw-autoplay-speed");
+      const searchInput = document.getElementById("mw-search");
+      const filterPills = document.getElementById("mw-filter-pills");
+      
+      // Category mapping logic
+      function getEventCategory(event, index) {
+        const headline = event.text.headline.toLowerCase();
+        const year = parseInt(event.start_date.year);
+        
+        if (headline.includes('deepmind') || headline.includes('alphago') || headline.includes('alphafold') || headline.includes('gemini') || headline.includes('google brain') || headline.includes('transformer')) {
+          return { id: 'deepmind', name: 'Google & DeepMind' };
+        } else if (headline.includes('openai') || headline.includes('gpt') || headline.includes('copilot') || headline.includes('chatgpt')) {
+          return { id: 'openai', name: 'OpenAI & GPT' };
+        } else if (headline.includes('deepseek') || headline.includes('claude') || headline.includes('anthropic') || headline.includes('meta') || headline.includes('llama')) {
+          return { id: 'opensource', name: 'Open Weights & Others' };
+        } else {
+          if (year < 2018) {
+            return { id: 'pioneering', name: 'Classic AI' };
+          }
+          return { id: 'opensource', name: 'Open Weights & Others' };
+        }
+      }
+      
+      function renderMarkers() {
+        markersRow.innerHTML = "";
+        if (filteredEvents.length === 0) {
+          markersRow.innerHTML = `
+            <div class="mw-empty-state">
+              <div class="mw-empty-icon">🔍</div>
+              <div>No milestones match your search filters</div>
+            </div>
+          `;
+          progressLine.style.width = "0%";
+          return;
+        }
+        
+        filteredEvents.forEach((event, idx) => {
+          const node = document.createElement("div");
+          node.className = `mw-marker-node ${idx === currentIndex ? 'active' : ''}`;
+          node.dataset.index = idx;
+          
+          const year = event.start_date.year;
+          const month = event.start_date.month ? `/${event.start_date.month}` : '';
+          
+          node.innerHTML = `
+            <span class="mw-marker-year">${year}${month}</span>
+            <div class="mw-marker-dot"></div>
+          `;
+          
+          node.addEventListener("click", () => {
+            selectMilestone(idx);
+            pauseAutoplay();
+          });
+          
+          markersRow.appendChild(node);
+        });
+        
+        updateProgressLine();
+      }
+      
+      function updateProgressLine() {
+        const firstNode = markersRow.children[0];
+        const activeNode = markersRow.children[currentIndex];
+        const lastNode = markersRow.children[markersRow.children.length - 1];
+        
+        const lineBg = document.getElementById("mw-track-line-bg");
+        const lineProgress = document.getElementById("mw-track-line-progress");
+        
+        if (!firstNode || !activeNode || !lastNode || !lineBg || !lineProgress) return;
+        
+        // Calculate centers of first, active, and last dots relative to mw-track-content
+        const markersRowOffset = markersRow.offsetLeft;
+        
+        const startX = markersRowOffset + firstNode.offsetLeft + (firstNode.clientWidth / 2);
+        const activeX = markersRowOffset + activeNode.offsetLeft + (activeNode.clientWidth / 2);
+        const endX = markersRowOffset + lastNode.offsetLeft + (lastNode.clientWidth / 2);
+        
+        lineBg.style.left = `${startX}px`;
+        lineBg.style.width = `${endX - startX}px`;
+        
+        lineProgress.style.left = `${startX}px`;
+        lineProgress.style.width = `${activeX - startX}px`;
+      }
+      
+      function selectMilestone(index) {
+        if (filteredEvents.length === 0) return;
+        
+        if (index < 0) index = 0;
+        if (index >= filteredEvents.length) index = filteredEvents.length - 1;
+        
+        const oldActive = markersRow.querySelector(".mw-marker-node.active");
+        if (oldActive) oldActive.classList.remove("active");
+        
+        currentIndex = index;
+        
+        const newActive = markersRow.children[currentIndex];
+        if (newActive) {
+          newActive.classList.add("active");
+          
+          // Center the active dot in the scroll view using robust client coordinates
+          const scrollAreaWidth = trackScrollArea.clientWidth;
+          const markerLeft = newActive.getBoundingClientRect().left - markersRow.getBoundingClientRect().left;
+          const markerWidth = newActive.clientWidth;
+          
+          trackScrollArea.scrollTo({
+            left: markerLeft - (scrollAreaWidth / 2) + (markerWidth / 2),
+            behavior: "smooth"
+          });
+        }
+        
+        updateProgressLine();
+        updateCardContent();
+        
+        btnPrev.disabled = currentIndex === 0;
+        btnNext.disabled = currentIndex === filteredEvents.length - 1;
+        
+        currentIndexEl.textContent = currentIndex + 1;
+        totalCountEl.textContent = filteredEvents.length;
+
+        // Synchronize with TimelineJS if available
+        const event = filteredEvents[currentIndex];
+        if (event && window.timeline && typeof window.timeline.goTo === 'function') {
+          if (event.originalIndex !== undefined) {
+            window.timeline.goTo(event.originalIndex + 1);
+          }
+        }
+      }
+      
+      function updateCardContent() {
+        const event = filteredEvents[currentIndex];
+        if (!event) {
+          cardTitle.textContent = "No milestones selected";
+          cardDesc.innerHTML = "";
+          cardDate.textContent = "";
+          cardCategory.textContent = "";
+          mediaContainer.innerHTML = "";
+          return;
+        }
+        
+        const headline = event.text.headline;
+        const text = event.text.text;
+        const year = event.start_date.year;
+        const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const monthStr = event.start_date.month ? monthNames[parseInt(event.start_date.month)] + " " : "";
+        const dateText = `${monthStr}${year}`;
+        
+        const cardInner = document.getElementById("mw-card");
+        cardInner.style.opacity = 0.4;
+        
+        setTimeout(() => {
+          cardDate.textContent = dateText;
+          cardCategory.textContent = event.categoryName || "AI Milestone";
+          cardTitle.innerHTML = headline;
+          cardDesc.innerHTML = text;
+          
+          renderMedia(event.media);
+          
+          cardInner.style.opacity = 1;
+        }, 150);
+      }
+      
+      function renderMedia(media) {
+        mediaContainer.innerHTML = "";
+        if (!media || !media.url) {
+          mediaContainer.innerHTML = `<div class="mw-maps-card"><span class="mw-maps-icon">🧠</span><div class="mw-maps-caption">AI Milestones</div></div>`;
+          return;
+        }
+        
+        const url = media.url;
+        const caption = media.caption || "";
+        const headline = filteredEvents[currentIndex].text.headline;
+        
+        if (url.includes("youtube.com") || url.includes("youtu.be")) {
+          let videoId = "";
+          if (url.includes("v=")) {
+            const parts = url.split("v=");
+            if (parts[1]) videoId = parts[1].split("&")[0];
+          } else if (url.includes("embed/")) {
+            const parts = url.split("embed/");
+            if (parts[1]) videoId = parts[1].split("?")[0];
+          } else if (url.includes("youtu.be/")) {
+            const parts = url.split("youtu.be/");
+            if (parts[1]) videoId = parts[1].split("?")[0];
+          }
+          
+          mediaContainer.innerHTML = `
+            <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+              <iframe class="mw-iframe" src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+              <div class="mw-media-caption-bar" style="font-size: 0.75rem; text-align: center; padding: 8px; color: #94a3b8; background: #0b0f19;">
+                ${caption}
+              </div>
+            </div>
+          `;
+        }
+        else if (url.includes("maps.app.goo.gl") || url.includes("google.com/maps")) {
+          mediaContainer.innerHTML = `
+            <div class="mw-maps-card">
+              <span class="mw-maps-icon">📍</span>
+              <h5 style="margin: 0 0 5px 0; font-weight: bold; color: inherit; font-size: 1.1rem;">Location Landmark</h5>
+              <div class="mw-maps-caption">${caption}</div>
+              <a href="${url}" target="_blank" class="mw-maps-btn">Open in Google Maps ↗</a>
+            </div>
+          `;
+        }
+        else {
+          mediaContainer.innerHTML = `
+            <div style="position: relative; width: 100%; height: 100%; overflow: hidden; display: flex; flex-direction: column;">
+              <img class="mw-img" src="${url}" alt="${headline}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="mw-media-fallback" style="display: none; width: 100%; height: 100%; min-height: 250px; background: linear-gradient(135deg, #1e1b4b, #2e1065); align-items: center; justify-content: center; flex-direction: column; color: #a5b4fc; padding: 20px; text-align: center;">
+                <span style="font-size: 3rem; margin-bottom: 10px;">🧠</span>
+                <span style="font-weight: 800; font-size: 1.1rem; margin-bottom: 5px;">${headline}</span>
+                <span style="font-size: 0.8rem; opacity: 0.8;">${caption}</span>
+              </div>
+              <div class="mw-media-caption-bar" style="font-size: 0.75rem; text-align: center; padding: 8px; color: #94a3b8; background: #0b0f19; width: 100%;">
+                ${caption}
+              </div>
+            </div>
+          `;
+        }
+
+        // Apply theme colors dynamically to elements created in JS
+        setTimeout(applyThemeStylesToDynamicContent, 0);
+      }
+
+      function applyThemeStylesToDynamicContent() {
+        const isLight = document.body.classList.contains("light-theme");
+        const captionBars = mediaContainer.querySelectorAll(".mw-media-caption-bar");
+        captionBars.forEach(bar => {
+          if (isLight) {
+            bar.style.background = "#e2e8f0";
+            bar.style.color = "#475569";
+          } else {
+            bar.style.background = "#0b0f19";
+            bar.style.color = "#94a3b8";
+          }
+        });
+      }
+
+      // Hook into theme switch event if it exists, or check body changes
+      const observer = new MutationObserver(applyThemeStylesToDynamicContent);
+      observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+      
+      function toggleAutoplay() {
+        if (autoplayInterval) {
+          pauseAutoplay();
+        } else {
+          startAutoplay();
+        }
+      }
+      
+      function startAutoplay() {
+        if (autoplayInterval) clearInterval(autoplayInterval);
+        
+        playIcon.style.display = "none";
+        pauseIcon.style.display = "inline";
+        btnPlay.classList.add("active");
+        
+        const speed = parseInt(autoplaySpeedSelect.value) || 5000;
+        
+        autoplayInterval = setInterval(() => {
+          if (currentIndex < filteredEvents.length - 1) {
+            selectMilestone(currentIndex + 1);
+          } else {
+            selectMilestone(0);
+          }
+        }, speed);
+      }
+      
+      function pauseAutoplay() {
+        if (autoplayInterval) {
+          clearInterval(autoplayInterval);
+          autoplayInterval = null;
+        }
+        playIcon.style.display = "inline";
+        pauseIcon.style.display = "none";
+        btnPlay.classList.remove("active");
+      }
+      
+      function filterMilestones() {
+        const activePill = filterPills.querySelector(".mw-pill.active");
+        const category = activePill ? activePill.dataset.category : "all";
+        const searchQuery = searchInput.value.toLowerCase().trim();
+        
+        filteredEvents = events.filter(event => {
+          const matchesCategory = (category === "all" || event.category === category);
+          
+          const titleMatch = event.text.headline.toLowerCase().includes(searchQuery);
+          const descMatch = event.text.text.toLowerCase().includes(searchQuery);
+          const yearMatch = event.start_date.year.includes(searchQuery);
+          const matchesSearch = !searchQuery || titleMatch || descMatch || yearMatch;
+          
+          return matchesCategory && matchesSearch;
+        });
+        
+        currentIndex = 0;
+        renderMarkers();
+        selectMilestone(0);
+      }
+      
+      btnPrev.addEventListener("click", () => {
+        selectMilestone(currentIndex - 1);
+        pauseAutoplay();
+      });
+      
+      btnNext.addEventListener("click", () => {
+        selectMilestone(currentIndex + 1);
+        pauseAutoplay();
+      });
+      
+      btnPlay.addEventListener("click", toggleAutoplay);
+      
+      autoplaySpeedSelect.addEventListener("change", () => {
+        if (autoplayInterval) {
+          startAutoplay();
+        }
+      });
+      
+      searchInput.addEventListener("input", () => {
+        filterMilestones();
+        pauseAutoplay();
+      });
+      
+      filterPills.addEventListener("click", (e) => {
+        const pill = e.target.closest(".mw-pill");
+        if (!pill) return;
+        
+        filterPills.querySelectorAll(".mw-pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+        
+        filterMilestones();
+        pauseAutoplay();
+      });
+      
+      document.getElementById("mw-scroll-left").addEventListener("click", () => {
+        trackScrollArea.scrollBy({ left: -200, behavior: "smooth" });
+      });
+      
+      document.getElementById("mw-scroll-right").addEventListener("click", () => {
+        trackScrollArea.scrollBy({ left: 200, behavior: "smooth" });
+      });
+      
+      const container = document.getElementById("milestone-walker");
+      document.addEventListener("keydown", (e) => {
+        const rect = container.getBoundingClientRect();
+        // Check if any part of the container is visible in the viewport
+        const inView = (rect.top < (window.innerHeight || document.documentElement.clientHeight) && rect.bottom > 0);
+        
+        if (inView) {
+          if (e.key === "ArrowLeft") {
+            selectMilestone(currentIndex - 1);
+            pauseAutoplay();
+            e.preventDefault();
+          } else if (e.key === "ArrowRight") {
+            selectMilestone(currentIndex + 1);
+            pauseAutoplay();
+            e.preventDefault();
+          }
+        }
+      });
+
+      // Mobile Touch Swiping Support
+      let touchStartX = 0;
+      let touchStartY = 0;
+      const card = document.getElementById("mw-card");
+      
+      card.addEventListener("touchstart", (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      }, { passive: true });
+      
+      card.addEventListener("touchend", (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const touchEndY = e.changedTouches[0].screenY;
+        handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+      }, { passive: true });
+      
+      function handleSwipe(startX, startY, endX, endY) {
+        const diffX = endX - startX;
+        const diffY = endY - startY;
+        
+        // Trigger swipe navigation if horizontal movement is dominant and > 50px
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+          if (diffX > 0) {
+            // Swipe right -> Go to Previous
+            if (currentIndex > 0) {
+              selectMilestone(currentIndex - 1);
+              pauseAutoplay();
+            }
+          } else {
+            // Swipe left -> Go to Next
+            if (currentIndex < filteredEvents.length - 1) {
+              selectMilestone(currentIndex + 1);
+              pauseAutoplay();
+            }
+          }
+        }
+      }
+      
+      renderMarkers();
+      selectMilestone(0);
+    }
+  });
+</script>
 
 ---
 
