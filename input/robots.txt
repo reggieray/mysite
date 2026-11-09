@@ -1,2 +1,7 @@
 User-agent: *
 Disallow: /bored-games/
+Disallow: /game-archive/
+Disallow: /royal-game-of-ur/
+Disallow: /hnefatafl/
+Disallow: /senet/
+
